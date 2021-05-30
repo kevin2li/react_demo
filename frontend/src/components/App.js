@@ -6,7 +6,7 @@ import TabComponent from './Tab.js';
 // import Home from '../views/Home.js';
 // import Contact from '../views/Contact.js';
 // import About from '../views/About.js';
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Link,  } from "react-router-dom";
 import axios from 'axios'
 const { Header, Content, Footer } = Layout;
 
@@ -84,15 +84,15 @@ class App extends React.Component {
               style={{
                 padding: 24,
                 margin: 0,
-                minHeight: 600,
+                minHeight: 750,
               }}
             >
               <TabComponent tab_type={this.state.tab_type}></TabComponent>
-              <Button type="primary" onClick={this.handleClick}>Click me</Button>
+              {/* <Button type="primary" onClick={this.handleClick}>Click me</Button>
               <h1>{this.state.time}</h1>
-              <Image src={"data:image/png;base64, " + this.state.image_data} />
+              <Image src={"data:image/png;base64, " + this.state.image_data} /> */}
             </Content>
-            <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+            <Footer style={{ textAlign: 'center' }}>Ant Design ©2021 Created by Ant UED</Footer>
           </Layout>
         </Layout>
       </Layout>

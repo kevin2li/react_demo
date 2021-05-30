@@ -24,6 +24,14 @@ eval_transforms = T.Compose([
 ])
 app = Flask(__name__)
 
+state = {
+    'img_path': None,
+    'models': [],
+    'embedding_rate': 0.4,
+    'dataset': 'WOW',
+    'framework': 'pytorch'
+}
+
 def img_preprocess(img_path, eval_transforms=eval_transforms):
     img = Image.open(img_path)
     img = eval_transforms(img)
@@ -77,16 +85,45 @@ def get_image():
     encoded_img = base64.encodebytes(image_binary).decode('ascii')
     return jsonify({'type': 'image', 'image_data': encoded_img})
 
-@app.route('/predict', methods=['POST'])
-def predict():
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
     img = request.files['file']
     save_path = f"upload/{img.filename}"
     img.save(save_path)
-    img = img_preprocess(save_path)
-    logits = model(img)
-    probs = F.softmax(logits, dim=1)
-    ic(probs)
-    return jsonify({'probs': probs.tolist()})
+    state['img_path'] = save_path
+    ic(save_path)
+    return jsonify({'status': 'ok'})
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    ic(vars(request))
+    models = request.form.get('models')
+    dataset = request.form.get('dataset')
+    embedding_rate = request.form.get('embedding_rate')
+    framework = request.form.get('framework')
+    ic(models)
+    ic(framework)
+    ic(dataset)
+    ic(embedding_rate)
+    response = {'status': 'ok'}
+    if state['img_path'] and models and framework and dataset and embedding_rate:
+        img = img_preprocess(state['img_path'])
+        logits = model(img)
+        probs = F.softmax(logits, dim=1)
+        ic(probs)
+        response['result'] = probs.tolist()
+    return jsonify(response)
+
+# @app.route('/predict', methods=['POST'])
+# def predict():
+#     img = request.files['file']
+#     save_path = f"upload/{img.filename}"
+#     img.save(save_path)
+#     img = img_preprocess(save_path)
+#     logits = model(img)
+#     probs = F.softmax(logits, dim=1)
+#     ic(probs)
+#     return jsonify({'probs': probs.tolist()})
 
 if __name__ == '__main__':
     app.run(debug=True)
