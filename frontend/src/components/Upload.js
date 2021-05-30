@@ -43,6 +43,7 @@ class UploadComponent extends React.Component {
     }
     render() {
         return (
+          <div style={{margin:"50px 0", height:"285px"}}>
             <Dragger {...props}>
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
@@ -53,6 +54,7 @@ class UploadComponent extends React.Component {
               band files
             </p>
           </Dragger>
+          </div>
         )
     }
 }

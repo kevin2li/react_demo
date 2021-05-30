@@ -40,6 +40,7 @@ class ImageSteganalysis extends React.Component {
                 3: ['Finished', 'Finished', 'Finished', 'In Progess'],
             }
         }
+        this.onFinish = this.onFinish.bind(this)
     }
     next = () => {
         this.setState({ step: (this.state.step + 1) % 4 })
@@ -59,6 +60,7 @@ class ImageSteganalysis extends React.Component {
           headers: { "Content-Type": "multipart/form-data" },
         })
         alert(response.data.status)
+        this.setState({ step: (this.state.step + 1) % 4 })
     }
     render() {
         if (this.state.step === 0) {
@@ -73,8 +75,8 @@ class ImageSteganalysis extends React.Component {
                             <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
                             <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
                         </Steps>
-                        <UploadComponent ></UploadComponent>
-                        <Button onClick={this.next} type='primary'>next</Button>
+                        <UploadComponent></UploadComponent>
+                        <Button onClick={this.next} type='primary' style={{margin:"50px 0"}}>next</Button>
                 </div>
             )
         } else if (this.state.step === 1) {
@@ -89,7 +91,7 @@ class ImageSteganalysis extends React.Component {
                         <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
                         <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
                     </Steps>
-                    <Form {...layout} name="nest-messages" onFinish={this.onFinish} validateMessages={validateMessages}>
+                    <Form {...layout} name="nest-messages" onFinish={this.onFinish} validateMessages={validateMessages} style={{margin: "50px 0"}}>
                         <Form.Item name={['framework']} label="框架" rules={[{ required: true }]}>
                             <Select placeholder="select framework" defaultValue='pytorch'>
                                 <Option value="pytorch">pytorch</Option>
@@ -149,7 +151,7 @@ class ImageSteganalysis extends React.Component {
                             </Button>
                         </Form.Item>
                     </Form>
-                    <Button onClick={this.next} type='primary'>next</Button>
+                    <Button onClick={this.next} type='primary' style={{margin:"50px 0"}}>next</Button>
                 </div>
             )
         } else if (this.state.step === 2) {
@@ -164,8 +166,10 @@ class ImageSteganalysis extends React.Component {
                         <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
                         <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
                     </Steps>
-                    <Spin />检测中,请稍候...<br />
-                    <Button onClick={this.next} type='primary'>next</Button>
+                    <div>
+                        <Spin style={{margin:"50px 0"}}/>检测中,请稍候...<br />
+                    </div>
+                    <Button onClick={this.next} type='primary' style={{margin:"50px 0", padding:"0 30px"}}>next</Button>
                 </div>
             )
         } else if (this.state.step === 3) {
@@ -180,7 +184,7 @@ class ImageSteganalysis extends React.Component {
                         <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
                         <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
                     </Steps>
-                    <Button onClick={this.next} type='primary'>next</Button>
+                    <Button onClick={this.next} type='primary' style={{margin:"50px 0"}}>next</Button>
                 </div>
             )
         }
