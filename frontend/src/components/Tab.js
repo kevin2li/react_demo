@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Space } from 'antd';
+import { Tabs } from 'antd';
 import Steganalysis from './Steganalysis'
 import FormComponent from './Form'
 

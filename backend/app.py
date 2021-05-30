@@ -2,17 +2,19 @@ import base64
 import io
 import os
 import sys
+
 sys.path.append('..')
 import time
 from pprint import pformat
 
-from flask import Flask, jsonify, request, send_file
-from flask_restful import Api, Resource
-from PIL import Image
-from backend.pytorch_version.models import ZhuNet
 import torch.nn.functional as F
 import torchvision.transforms as T
+from flask import Flask, jsonify, request, send_file
 from icecream import ic
+from PIL import Image
+
+from backend.pytorch_version.models import ZhuNet
+
 # os.environ['FLASK_APP'] = '/home/kevin2li/code/react_demo/flask-demo'
 # os.environ['FLASK_ENV']='development'
 model = ZhuNet()
@@ -21,7 +23,6 @@ eval_transforms = T.Compose([
     T.ToTensor()
 ])
 app = Flask(__name__)
-api = Api(app)
 
 def img_preprocess(img_path, eval_transforms=eval_transforms):
     img = Image.open(img_path)
@@ -29,29 +30,32 @@ def img_preprocess(img_path, eval_transforms=eval_transforms):
     img = img.unsqueeze(0)
     return img
 
+
 @app.route('/time')
 def get_current_time():
     return {'time': time.time()}
 
 @app.route('/')
+@app.route('/index')
 def index():
-    return "首页"
+    return jsonify({'tab_type': 'index'})
 
 @app.route('/steganography')
 def steganography():
-    return "隐写术"
+    return jsonify({'tab_type': 'steganography'})
 
 @app.route('/steganalysis')
 def steganalysis():
-    return "隐写分析"
+    return jsonify({'tab_type': 'steganalysis'})
+
 
 @app.route('/download')
 def download():
-    return "下载专区"
+    return jsonify({'tab_type': 'download'})
 
 @app.route('/about')
 def about():
-    return "关于我们"
+    return jsonify({'tab_type': 'about'})
 
 @app.route('/submit', methods=['GET', 'POST'])
 def submit():
@@ -83,3 +87,6 @@ def predict():
     probs = F.softmax(logits, dim=1)
     ic(probs)
     return jsonify({'probs': probs.tolist()})
+
+if __name__ == '__main__':
+    app.run(debug=True)

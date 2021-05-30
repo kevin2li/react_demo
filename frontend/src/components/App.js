@@ -28,32 +28,32 @@ class App extends React.Component {
   //   this.setState({ time: response.data.time })
   // }
   async handleClick(){
-    const response = await axios.get('/image');
+    const response = await axios.get('/time');
     // this.setState({ time: response.data.time})
-    this.setState({image_data: response.data.image_data})
+    this.setState({time: response.data.time})
   }
   
   async switch_nav({ item, key, keyPath, domEvent }){
+
     if(key === '1'){
-      this.setState({tab_type: 'index'})
-      const response = await axios.get('/');
-      alert(response.data)
+      const response = await axios.get('/index');
+      this.setState({tab_type: response.data.tab_type})
+      
     }else if(key === '2'){
-      this.setState({tab_type: 'steganography'})
       const response = await axios.get('/steganography');
-      alert(response.data)
+      this.setState({tab_type: response.data.tab_type})
+      
     }else if(key === '3'){
-      this.setState({tab_type: 'steganalysis'})
       const response = await axios.get('/steganalysis');
-      alert(response.data)
+      this.setState({tab_type: response.data.tab_type})
+      
     }else if(key === '4'){
-      this.setState({tab_type: 'download'})
       const response = await axios.get('/download');
-      alert(response.data)
+      this.setState({tab_type: response.data.tab_type})
+      
     }else if(key === '5'){
-      this.setState({tab_type: 'about'})
       const response = await axios.get('/about');
-      alert(response.data)
+      this.setState({tab_type: response.data.tab_type})
     }
   }
 
@@ -69,13 +69,6 @@ class App extends React.Component {
               <Menu.Item key="3"><Link to="/steganalysis">隐写分析</Link></Menu.Item>
               <Menu.Item key="4"><Link to="/download">下载专区</Link></Menu.Item>
               <Menu.Item key="5"><Link to="/about">关于我们</Link></Menu.Item>
-              <Switch>
-                <Route path="/" exact />
-                <Route path="/steganography"  />
-                <Route path="/steganalysis" />
-                <Route path="/download"  />
-                <Route path="/about"  />
-              </Switch>
             </Menu>
           </Router>
         </Header>
