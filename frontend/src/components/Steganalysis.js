@@ -19,7 +19,7 @@ class Steganalysis extends React.Component {
 
     render() {
         return (
-            <div style={{ padding: '0 50px' }}>
+            <div>
                 <Tabs tabPosition="top" onChange={this.handleTabClick}>
                     <TabPane tab="简介" key="1" >
                         <Typography>
