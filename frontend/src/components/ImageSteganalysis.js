@@ -22,9 +22,9 @@ const validateMessages = {
         range: '${label} must be between ${min} and ${max}',
     },
 };
-const onFinish = (values) => {
-    console.log(values);
-};
+// const onFinish = (values) => {
+//     console.log(values);
+// };
 // Form end
 
 

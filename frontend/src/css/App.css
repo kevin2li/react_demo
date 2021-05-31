@@ -2,10 +2,18 @@
 
 #components-layout-demo-top-side-2 .logo {
   float: left;
-  width: 120px;
+  width: 170px;
   height: 31px;
   margin: 16px 24px 16px 0;
-  background: rgba(255, 255, 255, 0.3);
+  /* background: rgba(255, 255, 255, 0.3); */
+}
+.logo{
+  color: #6092ff;
+  text-align: center;
+  line-height: 31px;
+  font-size: 19px;
+  width: 170px;
+  background: #001529
 }
 
 .ant-row-rtl #components-layout-demo-top-side-2 .logo {
@@ -15,4 +23,8 @@
 
 .site-layout-background {
   background: #fff;
+}
+
+.site-page-header {
+  border: 1px solid rgb(235, 237, 240);
 }

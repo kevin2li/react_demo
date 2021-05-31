@@ -16,9 +16,9 @@
 `npm install --global yarn`  
 `yarn --version`  
 
-## 3. 安装相关依赖
+## 3. 安装相关依赖  
+`npm install`  
 `yarn add antd`  
-`npm install axios`  
 
 ## 4. 安装flask  
 `pip install flask`
