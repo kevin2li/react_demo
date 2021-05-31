@@ -46,24 +46,27 @@ def get_current_time():
 @app.route('/')
 @app.route('/index')
 def index():
-    return jsonify({'tab_type': 'index'})
+    return jsonify({'current_tab': '1'})
 
 @app.route('/steganography')
 def steganography():
-    return jsonify({'tab_type': 'steganography'})
+    return jsonify({'current_tab': '2'})
 
 @app.route('/steganalysis')
 def steganalysis():
-    return jsonify({'tab_type': 'steganalysis'})
-
+    return jsonify({'current_tab': '3'})
 
 @app.route('/download')
 def download():
-    return jsonify({'tab_type': 'download'})
+    return jsonify({'current_tab': '4'})
+
+@app.route('/blog')
+def blog():
+    return jsonify({'current_tab': '5'})
 
 @app.route('/about')
 def about():
-    return jsonify({'tab_type': 'about'})
+    return jsonify({'current_tab': '6'})
 
 @app.route('/submit', methods=['GET', 'POST'])
 def submit():

@@ -8,16 +8,10 @@ const { TabPane } = Tabs;
 class TabComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            time: 0
-        }
-        this.handleTabClick = this.handleTabClick.bind(this)
     }
-    handleTabClick(event) {
-        // alert("Great Shot!");
-    }
+
     render() {
-        if (this.props.tab_type === 'index'){
+        if (this.props.current_tab === '1'){
             return (
                 <Tabs tabPosition="top" onChange={this.handleTabClick}>
                     <TabPane tab="简介" key="1">
@@ -37,7 +31,7 @@ class TabComponent extends React.Component {
                     </TabPane>
                 </Tabs>
             )
-        }else if(this.props.tab_type === 'steganography'){
+        }else if(this.props.current_tab === '2'){
             return (
                 <Tabs tabPosition="top" onChange={this.handleTabClick}>
                     <TabPane tab="简介" key="3">
@@ -69,11 +63,11 @@ class TabComponent extends React.Component {
                     </TabPane>
                 </Tabs>
             )
-        }else if(this.props.tab_type === 'steganalysis'){
+        }else if(this.props.current_tab === '3'){
             return (
                 <Steganalysis></Steganalysis>
             )
-        }else if(this.props.tab_type === 'download'){
+        }else if(this.props.current_tab === '4'){
             return (
                 <Tabs tabPosition="top" onChange={this.handleTabClick}>
                     <TabPane tab="数据集" key="1" >
@@ -129,7 +123,7 @@ class TabComponent extends React.Component {
                     </TabPane>
                 </Tabs>
             )
-        }else if(this.props.tab_type === 'about'){
+        }else if(this.props.current_tab === '6'){
             return (
                 <Tabs tabPosition="top" onChange={this.handleTabClick}>
                     <TabPane tab="团队介绍" key="1" >
