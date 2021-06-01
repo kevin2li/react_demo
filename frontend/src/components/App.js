@@ -68,7 +68,7 @@ class App extends React.Component {
             </Router>
           </Header>
           <Layout>
-            <Layout style={{ padding: '0 24px' }}>
+            <Layout style={{ padding: '0 24px'}}>
               {/* <Breadcrumb style={{ margin: '16px 0 0 20px' }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>List</Breadcrumb.Item>
@@ -80,12 +80,11 @@ class App extends React.Component {
                 style={{
                   padding: 24,
                   margin: "20px 0px",
+                  height: '100%',
+                  width: '100%'
                 }}
               >
                 <TabComponent current_tab={this.state.current_tab}></TabComponent>
-                {/* <Button type="primary" onClick={this.handleClick}>Click me</Button>
-                <h1>{this.state.time}</h1>
-                <Image src={"data:image/png;base64, " + this.state.image_data} /> */}
               </Content>
             </Layout>
               <Footer style={{ textAlign: 'center' }}>Ant Design ©2021 Created by Ant UED</Footer>

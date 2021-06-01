@@ -5,13 +5,17 @@ import { Layout, Menu} from 'antd';
 const { Header, Content, Footer } = Layout;
 const img_urls = ['url(http://img.daimg.com/uploads/allimg/190610/3-1Z610162304.jpg)', 'url(https://photoos.macsc.com/2021/02/02/03/02031706_9d2da8395b_small.jpg)', 'url(https://lh3.googleusercontent.com/proxy/yPO4DaonLKqcarbJG3ByuGdtaIqQrCI-z858HTKpYEVU_BVD6MVI_wBmNN24mo_iDwPLY6qbedBZVBGsmMKMS-_4eM1kq11zFxn4uRnX)']
 const baseStyle1 = {
-  minHeight: '600px',
+//   minHeight: '600px',
+  height: '100%',
   width: '100%',
   lineHeight: '400px',
   textAlign: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundSize: '100% 100%',
-  backgroundImage: img_urls[0],
+//   backgroundImage: img_urls[0],
+//   backgroundImage: 'url(https://2021.baai.ac.cn/assets/img/bg.jpg)',
+//   backgroundImage: 'url(https://cdn.wallpapersafari.com/20/84/It6uUS.jpg)',
+  backgroundImage: 'url(https://th.bing.com/th/id/R914c0cefaea861e735ce139770e648ec?rik=Safa%2fSvB8Mh4Ig&pid=ImgRaw)',
 }
 class Index extends React.Component {
     constructor(props) {
@@ -45,7 +49,7 @@ class Index extends React.Component {
                     <div style={baseStyle1}>
                     </div>
                 </Content>
-                <Footer style={{ textAlign: 'center' }}>Ant Design ©2021 Created by Ant UED</Footer>
+                <Footer style={{ textAlign: 'center', background:'#001529', color: '#ffffff' }}>Ant Design ©2021 Created by Ant UED</Footer>
               </Layout>
             </Layout>
           </Layout>   

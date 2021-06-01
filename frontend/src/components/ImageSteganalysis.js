@@ -45,12 +45,16 @@ class ImageSteganalysis extends React.Component {
     }
     next = () => {
         this.setState({ step: (this.state.step + 1) % 4 })
+        if(this.state.step === 3) {
+            this.setState({result: null})
+        }
     }
     onReset = () => {
         this.formRef.current.resetFields();
     };
     async onFinish(values) {
         console.log(values)
+        this.setState({ step: (this.state.step + 1) % 4 })
         var bodyFormData = new FormData()
         bodyFormData.append('framework', values.framework)
         bodyFormData.append('dataset', values.dataset)
@@ -64,13 +68,12 @@ class ImageSteganalysis extends React.Component {
         })
         // alert(response.data.result)
         console.log(response.data.result)
-        this.setState({ step: (this.state.step + 1) % 4 })
         this.setState({result: response.data.result})
     }
     render() {
         if (this.state.step === 0) {
             return (
-                <div>
+                <>
                     <Typography>
                         <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
                     </Typography>
@@ -82,11 +85,11 @@ class ImageSteganalysis extends React.Component {
                     </Steps>
                     <UploadComponent></UploadComponent>
                     <Button onClick={this.next} type='primary' style={{ margin: "20px 0" }}>next</Button>
-                </div>
+                </>
             )
         } else if (this.state.step === 1) {
             return (
-                <div>
+                <>
                     <Typography>
                     <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
                     </Typography>
@@ -162,11 +165,11 @@ class ImageSteganalysis extends React.Component {
                         </Form.Item>
                     </Form>
                     <Button onClick={this.next} type='primary' style={{}}>next</Button>
-                </div>
+                </>
             )
         } else if (this.state.step === 2) {
             return (
-                <div>
+                <>
                     <Typography>
                         <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
                     </Typography>
@@ -177,7 +180,7 @@ class ImageSteganalysis extends React.Component {
                         <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
                     </Steps>
                     <div style={{ textAlign: 'center' }}>
-                        <div style={{ height: '50px', lineHeight: '50px', margin: '40px 0 0 0', visibility: this.state.result ? 'hidden': 'visible'}}>
+                        <div style={{ height: '50px', lineHeight: '50px', margin: '40px 0 0 0', visibility: this.state.result ? 'hidden': 'visible', display: this.state.result ? 'none' : 'block'}}>
                             <Spin style={{padding: "0 30px" }} /><span>检测中,请稍候...</span><br />
                         </div>
                         <Result
@@ -193,11 +196,11 @@ class ImageSteganalysis extends React.Component {
                             style={{visibility: this.state.result ? 'visible': 'hidden'}}
                         />
                     </div>
-                </div>
+                </>
             )
         } else if (this.state.step === 3) {
             return (
-                <div>
+                <>
                     <Typography>
                         <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
                     </Typography>
@@ -207,11 +210,11 @@ class ImageSteganalysis extends React.Component {
                         <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
                         <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
                     </Steps>
-                    <div style={{ textAlign: 'center' }}>
+                    <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
                         <Image src={"data:image/png;base64, " + this.state.result.image} />
                     </div>
-                    <Button onClick={this.next} type='primary' style={{ margin: "50px 0" }}>next</Button>
-                </div>
+                    <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>next</Button>
+                </>
             )
         }
     }

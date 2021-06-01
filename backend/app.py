@@ -1,3 +1,4 @@
+# %%
 import base64
 import io
 import os
@@ -5,18 +6,22 @@ import sys
 
 sys.path.append('..')
 import time
+from pathlib import Path
 
 import torch.nn.functional as F
+import yaml
 from flask import Flask, jsonify, request
 from icecream import ic
 from PIL import Image
-from backend.utils import img_preprocess, plot_group_bars
-from backend.pytorch_version.models import ZhuNet
 
-# os.environ['FLASK_APP'] = '/home/kevin2li/code/react_demo/flask-demo'
-# os.environ['FLASK_ENV']='development'
-model = ZhuNet()
-model = model.load_from_checkpoint('/home/kevin2li/code/react_demo/backend/pytorch_version/checkpoints/wow-epoch=210-val_loss=0.44-val_acc=0.85.ckpt')
+from backend.pytorch_version.models import SRNet, XuNet, YedNet, YeNet, ZhuNet
+from backend.utils import img_preprocess, plot_group_bars
+
+root_dir = Path('/home/kevin2li/code/react_demo/')
+cfg_path = str(root_dir / 'backend/res/map.yml')
+with open(cfg_path) as f:
+    cfg = yaml.safe_load(f)
+# %%
 
 app = Flask(__name__)
 
@@ -102,19 +107,23 @@ def predict():
     response = {'status': 'ok'}
     response['result'] = {}
     if state['img_path'] and models and framework and dataset and embedding_rate:
-        ic(type(models))
-        if isinstance(models, str):
-            img = img_preprocess(state['img_path'][0])
-            logits = model(img)
-            probs = F.softmax(logits, dim=1).squeeze()
-            ic(probs)
-            response['result'][models] = probs.tolist()
-        elif isinstance(models, list):
+        models = models.split(',')
+        ic(models)
+        if isinstance(models, list):
             for model_name in models:
+                # 实例化模型+加载权重
+                model = eval(model_name)()
+                ckpt_path = str(root_dir / cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name]) if cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name] else None
+                ic(ckpt_path)
+                if ckpt_path:
+                    model = model.load_from_checkpoint(ckpt_path)
+                # 推理
                 img = img_preprocess(state['img_path'][0])
                 logits = model(img)
-                probs = F.softmax(logits, dim=1)
+                ic(logits)
+                probs = F.softmax(logits, dim=1).squeeze()
                 ic(probs)
+                # 记录
                 response['result'][model_name] = probs.tolist()
         else:
             raise ValueError("not supported format yet")

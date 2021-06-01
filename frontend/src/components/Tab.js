@@ -1,7 +1,6 @@
 import React from 'react';
 import { Tabs, Typography, Button } from 'antd';
 import Steganalysis from './Steganalysis'
-import FormComponent from './Form'
 const { Title, Paragraph } = Typography;
 
 const { TabPane } = Tabs;

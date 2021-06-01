@@ -30,4 +30,4 @@
 `yarn start`
 - shell2  
 `cd react_demo/backend`  
-`flask run`
+`python app.py`
