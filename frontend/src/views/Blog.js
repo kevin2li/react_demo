@@ -33,7 +33,7 @@ class Blog extends React.Component {
                   style={{
                     padding: 24,
                     margin: "20px 0px",
-                    minHeight: 800,
+                    // minHeight: 800,
                   }}
                 >
                   <Space direction="vertical" size="large">

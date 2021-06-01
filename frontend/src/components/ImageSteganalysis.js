@@ -1,6 +1,6 @@
 import React from 'react';
 import UploadComponent from './Upload'
-import { Steps, Typography, Form, Input, Button, Spin, Select, message, Space } from 'antd'
+import { Steps, Typography, Form, Result, Button, Spin, Select, message, Space } from 'antd'
 import axios from 'axios'
 
 const { Step } = Steps;
@@ -46,7 +46,7 @@ class ImageSteganalysis extends React.Component {
         this.setState({ step: (this.state.step + 1) % 4 })
     }
 
-    async onFinish(values){
+    async onFinish(values) {
         console.log(values)
         var bodyFormData = new FormData()
         bodyFormData.append('framework', values.framework)
@@ -54,10 +54,10 @@ class ImageSteganalysis extends React.Component {
         bodyFormData.append('embedding_rate', values.embedding_rate)
         bodyFormData.append('models', values.models)
         const response = await axios({
-          method: "post",
-          url: "/predict",
-          data: bodyFormData,
-          headers: { "Content-Type": "multipart/form-data" },
+            method: "post",
+            url: "/predict",
+            data: bodyFormData,
+            headers: { "Content-Type": "multipart/form-data" },
         })
         alert(response.data.status)
         this.setState({ step: (this.state.step + 1) % 4 })
@@ -67,23 +67,7 @@ class ImageSteganalysis extends React.Component {
             return (
                 <div>
                     <Typography>
-                        <Title>图像隐写分析Demo</Title>
-                    </Typography>
-                        <Steps current={this.state.step}>
-                            <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
-                            <Step title={this.state.step_titles[this.state.step][1]} subTitle="" description="选择隐写分析模型" />
-                            <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
-                            <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
-                        </Steps>
-                        <UploadComponent></UploadComponent>
-                        <Button onClick={this.next} type='primary' style={{margin:"50px 0"}}>next</Button>
-                </div>
-            )
-        } else if (this.state.step === 1) {
-            return (
-                <div>
-                    <Typography>
-                        <Title>图像隐写分析Demo</Title>
+                        <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
                     </Typography>
                     <Steps current={this.state.step}>
                         <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
@@ -91,7 +75,23 @@ class ImageSteganalysis extends React.Component {
                         <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
                         <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
                     </Steps>
-                    <Form {...layout} name="nest-messages" onFinish={this.onFinish} validateMessages={validateMessages} style={{margin: "50px 0"}}>
+                    <UploadComponent></UploadComponent>
+                    <Button onClick={this.next} type='primary' style={{ margin: "20px 0" }}>next</Button>
+                </div>
+            )
+        } else if (this.state.step === 1) {
+            return (
+                <div>
+                    <Typography>
+                    <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
+                    </Typography>
+                    <Steps current={this.state.step}>
+                        <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
+                        <Step title={this.state.step_titles[this.state.step][1]} subTitle="" description="选择隐写分析模型" />
+                        <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
+                        <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
+                    </Steps>
+                    <Form {...layout} name="nest-messages" onFinish={this.onFinish} validateMessages={validateMessages} style={{ margin: "20px 0" }}>
                         <Form.Item name={['framework']} label="框架" rules={[{ required: true }]}>
                             <Select placeholder="select framework" defaultValue='pytorch'>
                                 <Option value="pytorch">pytorch</Option>
@@ -147,18 +147,18 @@ class ImageSteganalysis extends React.Component {
                         </Form.Item>
                         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                             <Button type="primary" htmlType="submit" onFinish={this.onFinish}>
-                                开始检测
+                                提交
                             </Button>
                         </Form.Item>
                     </Form>
-                    <Button onClick={this.next} type='primary' style={{margin:"50px 0"}}>next</Button>
+                    <Button onClick={this.next} type='primary' style={{ margin: "20px 0" }}>next</Button>
                 </div>
             )
         } else if (this.state.step === 2) {
             return (
                 <div>
                     <Typography>
-                        <Title>图像隐写分析Demo</Title>
+                        <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
                     </Typography>
                     <Steps current={this.state.step}>
                         <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
@@ -166,17 +166,31 @@ class ImageSteganalysis extends React.Component {
                         <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
                         <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
                     </Steps>
-                    <div>
-                        <Spin style={{margin:"50px 0"}}/>检测中,请稍候...<br />
+                    <div style={{ textAlign: 'center' }}>
+                        <div style={{ height: '50px', lineHeight: '50px', margin: '40px 0 0 0' }}>
+                            <Spin style={{padding: "0 30px" }} /><span>检测中,请稍候...</span><br />
+                        </div>
+                        <Result
+                            status="success"
+                            title="检测完成!"
+                            subTitle=""
+                            extra={[
+                                <Button type="primary" key="console">
+                                    查看结果
+                                </Button>,
+                                // <Button key="buy">Buy Again</Button>,
+                            ]}
+                            style={{visibility:'hidden'}}
+                        />
                     </div>
-                    <Button onClick={this.next} type='primary' style={{margin:"50px 0", padding:"0 30px"}}>next</Button>
+                    <Button onClick={this.next} type='primary' style={{ margin: "20px 0", padding: "0 30px" }}>next</Button>
                 </div>
             )
         } else if (this.state.step === 3) {
             return (
                 <div>
                     <Typography>
-                        <Title>图像隐写分析Demo</Title>
+                        <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
                     </Typography>
                     <Steps current={this.state.step}>
                         <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
@@ -184,7 +198,7 @@ class ImageSteganalysis extends React.Component {
                         <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
                         <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
                     </Steps>
-                    <Button onClick={this.next} type='primary' style={{margin:"50px 0"}}>next</Button>
+                    <Button onClick={this.next} type='primary' style={{ margin: "50px 0" }}>next</Button>
                 </div>
             )
         }

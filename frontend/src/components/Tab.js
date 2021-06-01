@@ -53,12 +53,12 @@ class TabComponent extends React.Component {
                     </TabPane>
                     <TabPane tab="文本隐写" key="1" >
                         <Typography>
-                            <Title>文本隐写Demo</Title>
+                            <Title  style={{ textAlign: 'center' }}>文本隐写Demo</Title>
                         </Typography>
                     </TabPane>
                     <TabPane tab="图像隐写" key="2">
                         <Typography>
-                                <Title>图像隐写Demo</Title>
+                                <Title style={{ textAlign: 'center' }}>图像隐写Demo</Title>
                         </Typography>
                     </TabPane>
                 </Tabs>
