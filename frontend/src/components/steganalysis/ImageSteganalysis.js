@@ -1,5 +1,5 @@
 import React from 'react';
-import UploadComponent from './Upload'
+import UploadComponent from '../Upload'
 import { Steps, Typography, Form, Result, Button, Spin, Select, message, Space, Image } from 'antd'
 import axios from 'axios'
 const { Step } = Steps;

@@ -20,23 +20,16 @@ class App extends React.Component {
       image_data: null,
       current_tab: '1'
     }
-    this.handleClick = this.handleClick.bind(this)
-    this.switch_nav = this.switch_nav.bind(this)
-    this.clickLogo = this.clickLogo.bind(this)
+    this.menuRef = React.createRef();
+    // this.switch_nav = this.switch_nav.bind(this)
+    // this.clickLogo = this.clickLogo.bind(this)
   }
 
-  async handleClick() {
-    const response = await axios.get('/time');
-    // this.setState({ time: response.data.time})
-    this.setState({ time: response.data.time })
+  clickLogo = () => {
+    this.setState({ current_tab: '1' })
   }
-  async clickLogo() {
-    // const response = await axios.get('/index');
-    // this.setState({ tab_type: response.data.tab_type })
-    this.setState({ current_tab: "1" })
 
-  }
-  async switch_nav({ item, key, keyPath, domEvent }) {
+  switch_nav = ({ item, key, keyPath, domEvent }) => {
     this.setState({ current_tab: key })
   }
 
@@ -55,14 +48,14 @@ class App extends React.Component {
     } else if (this.state.current_tab === '6') {
       content = <About></About>
     }
-
+    
     return (
       <Layout style={{ height: '100%' }}>
         <Header className="header">
           <Router>
             <div className="logo"><Link to="/index" onClick={this.clickLogo}>集成隐写分析平台</Link></div>
-            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[this.state.current_tab]} onSelect={this.switch_nav}>
-              <Menu.Item key="1"><Link to="/">首页</Link></Menu.Item>
+            <Menu theme="dark" ref={this.menuRef} mode="horizontal" defaultSelectedKeys={[this.state.current_tab]} onSelect={this.switch_nav}>
+              <Menu.Item key="1"><Link to="/index">首页</Link></Menu.Item>
               <Menu.Item key="2"><Link to="/steganography">隐写术</Link></Menu.Item>
               <Menu.Item key="3"><Link to="/steganalysis">隐写分析</Link></Menu.Item>
               <Menu.Item key="4"><Link to="/download">下载专区</Link></Menu.Item>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Tabs, Typography } from 'antd';
-import ImageSteganalysis from '../components/ImageSteganalysis'
-import TextSteganalysis from '../components/TextSteganalysis'
+import ImageSteganalysis from '../components/steganalysis/ImageSteganalysis'
+import TextSteganalysis from '../components/steganalysis/TextSteganalysis'
 import '../css/Steganalysis.css';
 
 const { TabPane } = Tabs;
