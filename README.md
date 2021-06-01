@@ -17,6 +17,7 @@
 `yarn --version`  
 
 ## 3. 安装相关依赖  
+`cd react_demo/frontend`  
 `npm install`  
 `yarn add antd`  
 

@@ -11,7 +11,7 @@ const baseStyle1 = {
   textAlign: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundSize: '100% 100%',
-  backgroundImage: img_urls[0]
+  backgroundImage: img_urls[0],
 }
 class Index extends React.Component {
     constructor(props) {
@@ -39,7 +39,7 @@ class Index extends React.Component {
   
                 <Content
                   style={{
-                    minHeight: 700,
+                    // minHeight: 700,
                   }}
                 >
                     <div style={baseStyle1}>

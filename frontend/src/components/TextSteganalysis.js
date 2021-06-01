@@ -6,7 +6,7 @@ const { Option } = Select;
 // 文本隐写分析
 const layout = {
     labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
+    wrapperCol: { span: 8 },
   };
   
   /* eslint-disable no-template-curly-in-string */
@@ -30,7 +30,7 @@ class TextSteganalysis extends React.Component {
         return (
             <div>
                 <Typography>
-                    <Title>文本隐写分析Demo</Title>
+                    <Title style={{ textAlign: 'center' }}>文本隐写分析Demo</Title>
                 </Typography>
                 <Form {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages}>
                     <Form.Item name={['user', 'text']} label="可疑文本" rules={[{ required: true }]}>

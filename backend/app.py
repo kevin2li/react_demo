@@ -5,38 +5,30 @@ import sys
 
 sys.path.append('..')
 import time
-from pprint import pformat
 
 import torch.nn.functional as F
-import torchvision.transforms as T
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request
 from icecream import ic
 from PIL import Image
-
+from backend.utils import img_preprocess, plot_group_bars
 from backend.pytorch_version.models import ZhuNet
 
 # os.environ['FLASK_APP'] = '/home/kevin2li/code/react_demo/flask-demo'
 # os.environ['FLASK_ENV']='development'
 model = ZhuNet()
 model = model.load_from_checkpoint('/home/kevin2li/code/react_demo/backend/pytorch_version/checkpoints/wow-epoch=210-val_loss=0.44-val_acc=0.85.ckpt')
-eval_transforms = T.Compose([
-    T.ToTensor()
-])
+
 app = Flask(__name__)
 
 state = {
-    'img_path': None,
+    'img_path': [],
     'models': [],
     'embedding_rate': 0.4,
     'dataset': 'WOW',
     'framework': 'pytorch'
 }
 
-def img_preprocess(img_path, eval_transforms=eval_transforms):
-    img = Image.open(img_path)
-    img = eval_transforms(img)
-    img = img.unsqueeze(0)
-    return img
+
 
 
 @app.route('/time')
@@ -75,7 +67,6 @@ def submit():
     gender = request.form.get('gender')
     imgs = request.files['file']
     imgs.save(f"upload/{imgs.filename}")
-    print(pformat(vars(request)))
     print(note, gender)
     return {'name': 'Lucy'}
 
@@ -93,8 +84,8 @@ def upload_image():
     img = request.files['file']
     save_path = f"upload/{img.filename}"
     img.save(save_path)
-    state['img_path'] = save_path
-    ic(save_path)
+    state['img_path'].append(save_path)
+    ic(state['img_path'])
     return jsonify({'status': 'ok'})
 
 @app.route('/predict', methods=['POST'])
@@ -109,12 +100,34 @@ def predict():
     ic(dataset)
     ic(embedding_rate)
     response = {'status': 'ok'}
+    response['result'] = {}
     if state['img_path'] and models and framework and dataset and embedding_rate:
-        img = img_preprocess(state['img_path'])
-        logits = model(img)
-        probs = F.softmax(logits, dim=1)
-        ic(probs)
-        response['result'] = probs.tolist()
+        ic(type(models))
+        if isinstance(models, str):
+            img = img_preprocess(state['img_path'][0])
+            logits = model(img)
+            probs = F.softmax(logits, dim=1).squeeze()
+            ic(probs)
+            response['result'][models] = probs.tolist()
+        elif isinstance(models, list):
+            for model_name in models:
+                img = img_preprocess(state['img_path'][0])
+                logits = model(img)
+                probs = F.softmax(logits, dim=1)
+                ic(probs)
+                response['result'][model_name] = probs.tolist()
+        else:
+            raise ValueError("not supported format yet")
+        ic(response['result'])
+        fig = plot_group_bars(response['result'])
+        fig.savefig('bar.png')
+
+        img = Image.open('bar.png')
+        buffer = io.BytesIO()
+        img.save(buffer, format='PNG')
+        image_binary = buffer.getvalue()
+        encoded_img = base64.encodebytes(image_binary).decode('ascii')
+        response['result']['image'] = encoded_img
     return jsonify(response)
 
 # @app.route('/predict', methods=['POST'])

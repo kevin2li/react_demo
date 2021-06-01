@@ -3,3 +3,4 @@
 **/build
 .vscode
 backend/upload
+backend/*.png

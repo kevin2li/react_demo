@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu} from 'antd';
+import { Layout, Menu, Breadcrumb } from 'antd';
 import TabComponent from './Tab.js';
 import { BrowserRouter as Router, Link, } from "react-router-dom";
 import axios from 'axios'
@@ -29,7 +29,8 @@ class App extends React.Component {
   async clickLogo() {
     // const response = await axios.get('/index');
     // this.setState({ tab_type: response.data.tab_type })
-    alert(this.state.current_tab)
+    this.setState({ current_tab: "1" })
+
   }
   async switch_nav({ item, key, keyPath, domEvent }) {
     this.setState({ current_tab: key })
@@ -45,13 +46,13 @@ class App extends React.Component {
       return (
         <Index {...props}></Index>
       )
-    }else if (this.state.current_tab === '5') {
+    } else if (this.state.current_tab === '5') {
       return (
         <Blog {...props}></Blog>
       )
     } else {
       return (
-        <Layout style={{ height: '100%'}}>
+        <Layout style={{ height: '100%' }}>
           <Header className="header">
             <Router>
               {/* TODO: 菜单项回到首页 */}
@@ -67,14 +68,18 @@ class App extends React.Component {
             </Router>
           </Header>
           <Layout>
-            <Layout style={{ padding: '0 24px 24px' }}>
+            <Layout style={{ padding: '0 24px' }}>
+              {/* <Breadcrumb style={{ margin: '16px 0 0 20px' }}>
+                <Breadcrumb.Item>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>List</Breadcrumb.Item>
+                <Breadcrumb.Item>App</Breadcrumb.Item>
+              </Breadcrumb> */}
 
               <Content
                 className="site-layout-background"
                 style={{
                   padding: 24,
                   margin: "20px 0px",
-                  minHeight: 800,
                 }}
               >
                 <TabComponent current_tab={this.state.current_tab}></TabComponent>
@@ -82,8 +87,8 @@ class App extends React.Component {
                 <h1>{this.state.time}</h1>
                 <Image src={"data:image/png;base64, " + this.state.image_data} /> */}
               </Content>
-              <Footer style={{ textAlign: 'center' }}>Ant Design ©2021 Created by Ant UED</Footer>
             </Layout>
+              <Footer style={{ textAlign: 'center' }}>Ant Design ©2021 Created by Ant UED</Footer>
           </Layout>
         </Layout>
       )
