@@ -50,7 +50,7 @@ class App extends React.Component {
     }
     
     return (
-      <Layout style={{ height: '100%' }}>
+      <Layout>
         <Header className="header">
           <Router>
             <div className="logo"><Link to="/index" onClick={this.clickLogo}>集成隐写分析平台</Link></div>

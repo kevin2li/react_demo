@@ -8,7 +8,7 @@ class Steganography extends React.Component {
 
     render() {
         return (
-            <Layout style={{ padding: '0 24px' }}>
+            <Layout style={{ padding: '0 24px', minHeight: '83vh' }}>
                 <Content
                     className="site-layout-background"
                     style={{

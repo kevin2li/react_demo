@@ -28,7 +28,7 @@ class TextSteganalysis extends React.Component {
 
     render() {
         return (
-            <div>
+            <>
                 <Typography>
                     <Title style={{ textAlign: 'center' }}>文本隐写分析Demo</Title>
                 </Typography>
@@ -53,7 +53,7 @@ class TextSteganalysis extends React.Component {
                                 </Button>
                     </Form.Item>
                 </Form>
-            </div>
+            </>
         )
     }
 }

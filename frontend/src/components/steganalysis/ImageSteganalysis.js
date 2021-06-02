@@ -3,7 +3,7 @@ import UploadComponent from '../Upload'
 import { Steps, Typography, Form, Result, Button, Spin, Select, message, Space, Image } from 'antd'
 import axios from 'axios'
 const { Step } = Steps;
-const { Title } = Typography;
+const { Title, Paragraph} = Typography;
 const { Option, OptGroup } = Select;
 
 // Form begin
@@ -71,34 +71,18 @@ class ImageSteganalysis extends React.Component {
         this.setState({result: response.data.result})
     }
     render() {
+        var content;
+
         if (this.state.step === 0) {
-            return (
+            content =  (
                 <>
-                    <Typography>
-                        <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
-                    </Typography>
-                    <Steps current={this.state.step}>
-                        <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
-                        <Step title={this.state.step_titles[this.state.step][1]} subTitle="" description="选择隐写分析模型" />
-                        <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
-                        <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
-                    </Steps>
                     <UploadComponent></UploadComponent>
                     <Button onClick={this.next} type='primary' style={{ margin: "20px 0" }}>next</Button>
                 </>
             )
         } else if (this.state.step === 1) {
-            return (
+            content = (
                 <>
-                    <Typography>
-                    <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
-                    </Typography>
-                    <Steps current={this.state.step}>
-                        <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
-                        <Step title={this.state.step_titles[this.state.step][1]} subTitle="" description="选择隐写分析模型" />
-                        <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
-                        <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
-                    </Steps>
                     <Form {...layout} ref={this.formRef} name="nest-messages" initialValues={{ remember: true }} onFinish={this.onFinish} validateMessages={validateMessages} style={{ margin: "30px 0 0 0" }}>
                         <Form.Item name={['framework']} label="框架" rules={[{ required: true }]} initialValue='pytorch'>
                             <Select placeholder="select framework" defaultValue='pytorch'>
@@ -168,17 +152,7 @@ class ImageSteganalysis extends React.Component {
                 </>
             )
         } else if (this.state.step === 2) {
-            return (
-                <>
-                    <Typography>
-                        <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
-                    </Typography>
-                    <Steps current={this.state.step}>
-                        <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
-                        <Step title={this.state.step_titles[this.state.step][1]} subTitle="" description="选择隐写分析模型" />
-                        <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
-                        <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
-                    </Steps>
+            content =  (
                     <div style={{ textAlign: 'center' }}>
                         <div style={{ height: '50px', lineHeight: '50px', margin: '40px 0 0 0', visibility: this.state.result ? 'hidden': 'visible', display: this.state.result ? 'none' : 'block'}}>
                             <Spin style={{padding: "0 30px" }} /><span>检测中,请稍候...</span><br />
@@ -196,27 +170,30 @@ class ImageSteganalysis extends React.Component {
                             style={{visibility: this.state.result ? 'visible': 'hidden'}}
                         />
                     </div>
-                </>
             )
         } else if (this.state.step === 3) {
-            return (
-                <>
-                    <Typography>
-                        <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
-                    </Typography>
-                    <Steps current={this.state.step}>
-                        <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
-                        <Step title={this.state.step_titles[this.state.step][1]} subTitle="" description="选择隐写分析模型" />
-                        <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
-                        <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
-                    </Steps>
-                    <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
+            content = <>
+                        <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
                         <Image src={"data:image/png;base64, " + this.state.result.image} />
-                    </div>
-                    <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>next</Button>
-                </>
-            )
+                        </div>
+                        <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>next</Button>
+                    </>
         }
+        return (
+            <>
+            <Typography>
+                <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
+                {/* <Paragraph>图像隐写分析是检测图像中是否含有秘密信息的关键技术，本平台提供了五种隐写分析模型(ZhuNet、SRNet、XuNet、YeNet、Yedroudj-Net)在8种隐写数据集(WOW、S-UNIWARD、UT-GAN等)上的预训练模型，欢迎使用！</Paragraph> */}
+            </Typography>
+            <Steps current={this.state.step}>
+                <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
+                <Step title={this.state.step_titles[this.state.step][1]} subTitle="" description="选择隐写分析模型" />
+                <Step title={this.state.step_titles[this.state.step][2]} description="检测" />
+                <Step title={this.state.step_titles[this.state.step][3]} description="查看结果" />
+            </Steps>
+                {content}
+            </>
+        )
     }
 }
 

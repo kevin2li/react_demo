@@ -7,7 +7,7 @@ class Blog extends React.Component {
 
   render() {
     return (
-      <Layout style={{ padding: '0 24px 24px', }}>
+      <Layout style={{ padding: '0 24px 24px', minHeight: '80vh' }}>
 
         <Content
           className="site-layout-background"
