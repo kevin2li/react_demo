@@ -8,12 +8,12 @@ class About extends React.Component {
 
     render() {
         return (
-            <Layout style={{ padding: '0 24px', minHeight: '80vh' }}>
+            <Layout style={{ padding: '0 24px', minHeight: '83vh' }}>
                 <Content
                     className="site-layout-background"
                     style={{
                         padding: 24,
-                        margin: "20px 0px",
+                        margin: "85px 0px 0 0",
                         height: '100%',
                         width: '100%'
                     }}                    

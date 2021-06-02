@@ -51,7 +51,7 @@ class App extends React.Component {
     
     return (
       <Layout>
-        <Header className="header">
+        <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
           <Router>
             <div className="logo"><Link to="/index" onClick={this.clickLogo}>集成隐写分析平台</Link></div>
             <Menu theme="dark" ref={this.menuRef} mode="horizontal" defaultSelectedKeys={[this.state.current_tab]} onSelect={this.switch_nav}>

@@ -17,7 +17,7 @@ class Steganalysis extends React.Component {
                     className="site-layout-background"
                     style={{
                         padding: 24,
-                        margin: "20px 0px",
+                        margin: "85px 0px 0 0 ",
                         height: '100%',
                         width: '100%'
                     }}
