@@ -4,7 +4,7 @@ const {Content } = Layout;
 
 
 const baseStyle1 = {
-  minHeight: '85vh',
+  minHeight: '93vh',
   display: 'flex',
   // height: '100%',
   width: '100%',

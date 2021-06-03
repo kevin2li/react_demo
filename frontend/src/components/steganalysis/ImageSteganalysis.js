@@ -33,6 +33,7 @@ class ImageSteganalysis extends React.Component {
         super(props);
         this.state = {
             step: 0,
+            uploadFlieLst: [],
             step_titles: {
                 0: ['In Progess', 'Waiting', 'Waiting', 'Waiting'],
                 1: ['Finished', 'In Progess', 'Waiting', 'Waiting'],
@@ -42,17 +43,35 @@ class ImageSteganalysis extends React.Component {
             result: null
         }
         this.onFinish = this.onFinish.bind(this);
+        this.onChange = this.onChange.bind(this);
         this.formRef = React.createRef();
     }
     next = () => {
-        this.setState({ step: (this.state.step + 1) % 4 })
-        if(this.state.step === 3) {
+        if(this.state.step === 0){
+            // 没有上传图片
+            if(this.state.uploadFlieLst.length === 0){
+                message.warn("请至少上传一张图片!")
+            }else{
+                this.setState({ step: (this.state.step + 1) % 4 })
+            }
+        }else if(this.state.step === 1) {
+            
+        }else if(this.state.step === 2) {
+            this.setState({ step: (this.state.step + 1) % 4 })
+        }else if(this.state.step === 3) {
+            this.setState({ step: (this.state.step + 1) % 4 })
             this.setState({result: null})
+            this.setState({uploadFlieLst: []})
         }
     }
+    back = ()=>{
+        this.setState({step: this.state.step-1})
+    }
+    /* step2: 表单重置 */
     onReset = () => {
         this.formRef.current.resetFields();
     };
+    /* step2：表单上传 */
     async onFinish(values) {
         console.log(values)
         this.setState({ step: (this.state.step + 1) % 4 })
@@ -71,6 +90,20 @@ class ImageSteganalysis extends React.Component {
         console.log(response.data.result)
         this.setState({result: response.data.result})
     }
+    /* step1: 上传图片 */
+    onChange(info) {
+        const { status } = info.file;
+        if (status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (status === 'done') {
+            message.success(`${info.file.name} file uploaded successfully.`);
+        } else if (status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
+        this.setState({uploadFlieLst:[...info.fileList]})
+        console.log(this.state.uploadFlieLst)
+      }
     render() {
         var content;
 
@@ -79,26 +112,14 @@ class ImageSteganalysis extends React.Component {
                 name: 'file',
                 multiple: true,
                 action: '/upload_image',
-                onChange(info) {
-                  const { status } = info.file;
-                  if (status !== 'uploading') {
-                    console.log(info.file, info.fileList);
-                  }
-                  if (status === 'done') {
-                    message.success(`${info.file.name} file uploaded successfully.`);
-            
-                  } else if (status === 'error') {
-                    message.error(`${info.file.name} file upload failed.`);
-                  }
-                },
                 onDrop(e) {
                   console.log('Dropped files', e.dataTransfer.files);
                 },
             };            
             content =  (
                 <>
-                    <div style={{margin:"50px 0"}}>
-                        <Dragger {...props}>
+                    <div style={{margin:"50px auto 20px", height: '35vh', width: '80vw'}}>
+                        <Dragger {...props} onChange={this.onChange} fileList={this.state.uploadFlieLst}>
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
                         </p>
@@ -109,7 +130,7 @@ class ImageSteganalysis extends React.Component {
                         </p>
                         </Dragger>
                     </div>
-                    <Button onClick={this.next} type='primary' style={{ margin: "20px 0" }}>next</Button>
+                    <Button onClick={this.next} type='primary' style={{ margin: "20px 0 0" }}>下一步</Button>
                 </>
             )
         } else if (this.state.step === 1) {
@@ -180,7 +201,8 @@ class ImageSteganalysis extends React.Component {
                             </Button>
                         </Form.Item>
                     </Form>
-                    <Button onClick={this.next} type='primary' style={{}}>next</Button>
+                    <Button onClick={this.back} type='default' style={{}}>返回上一步</Button>
+                    {/* <Button onClick={this.next} type='primary' style={{}}>下一步</Button> */}
                 </>
             )
         } else if (this.state.step === 2) {
@@ -208,7 +230,7 @@ class ImageSteganalysis extends React.Component {
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
                         <Image src={"data:image/png;base64, " + this.state.result.image} />
                         </div>
-                        <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>next</Button>
+                        <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>重新检测</Button>
                     </>
         }
         return (

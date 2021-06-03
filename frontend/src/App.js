@@ -1,7 +1,6 @@
 import React from 'react';
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout, Menu } from 'antd';
 import { BrowserRouter as Router, Link, } from "react-router-dom";
-import axios from 'axios'
 import Index from './views/Index'
 import Blog from './views/Blog'
 import Download from './views/Download'
@@ -50,7 +49,7 @@ class App extends React.Component {
     }
     
     return (
-      <Layout>
+      <Layout style={{minHeight: '100%'}}>
         <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
           <Router>
             <div className="logo"><Link to="/index" onClick={this.clickLogo}>集成隐写分析平台</Link></div>
@@ -65,7 +64,7 @@ class App extends React.Component {
           </Router>
         </Header>
           {content}
-        <Footer style={{ textAlign: 'center' }}>Ant Design ©2021 Created by Ant UED</Footer>
+        <Footer style={{ textAlign: 'center' }}>Ant Design ©2021 Created by Kevin</Footer>
       </Layout>
     )
   }

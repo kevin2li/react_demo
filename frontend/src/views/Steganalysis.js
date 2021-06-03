@@ -9,7 +9,6 @@ const {Content } = Layout;
 
 class Steganalysis extends React.Component {
 
-
     render() {
         return (
             <Layout style={{ padding: '0 24px', minHeight: '83vh' }}>

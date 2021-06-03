@@ -32,6 +32,7 @@ class Download extends React.Component {
                             <Paper></Paper>
                         </TabPane>
                     </Tabs>
+                    
                 </Content>
             </Layout>
         )
