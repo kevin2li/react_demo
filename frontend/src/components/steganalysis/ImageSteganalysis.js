@@ -1,5 +1,5 @@
 import React from 'react';
-import { Steps, Typography, Form, Result, Button, Spin, Select, message, Upload, Image } from 'antd'
+import { Steps, Typography, Form, Result, Button, Spin, Select, message, Upload, Image, Modal, Table } from 'antd'
 import axios from 'axios'
 import { InboxOutlined } from '@ant-design/icons';
 const { Step } = Steps;
@@ -26,7 +26,123 @@ const validateMessages = {
 //     console.log(values);
 // };
 // Form end
+/* Table columns */
 
+const columns = [
+    {
+      title: '图片',
+      dataIndex: 'image',
+      key: 'image',
+      sorter: (a, b) => a.image.length - b.image.length,
+      sortDirections: ['descend', 'ascend'],
+      defaultSortOrder: 'descend'
+    },
+    {
+      title: '框架',
+      dataIndex: 'framework',
+      key: 'framework',
+      filters: [
+          {
+              text: 'pytorch',
+              value: 'pytorch'
+          },{
+              text: 'tensorflow',
+              value: 'tensorflow'
+          }
+      ],
+      onFilter: (value, record) => record.framework.indexOf(value) === 0,
+    },
+    {
+        title: '训练数据集',
+        dataIndex: 'dataset',
+        key: 'dataset',
+        filters: [
+            {
+                text: 'WOW',
+                value: 'WOW'
+            },{
+                text: 'S-UNIWARD',
+                value: 'S-UNIWARD'
+            },{
+                text: 'HILL',
+                value: 'HILL'
+            },{
+                text: 'HUGO',
+                value: 'HUGO'
+            },{
+                text: 'MG',
+                value: 'MG'
+            },{
+                text: 'MVG',
+                value: 'MVG'
+            },{
+                text: 'MiPOD',
+                value: 'MiPOD'
+            },{
+                text: 'UT-GAN',
+                value: 'UT-GAN'
+            }],
+        onFilter: (value, record) => record.dataset.indexOf(value) === 0,
+    },
+    {
+      title: '训练嵌入率',
+      dataIndex: 'embedding_rate',
+      key: 'embedding_rate',
+      filters: [
+        {
+            text: '0.2 bpp',
+            value: '0.2'
+        },{
+            text: '0.4 bpp',
+            value: '0.4',
+        },{
+            text: '0.8 bpp',
+            value: '0.8',
+        }],
+      onFilter: (value, record) => record.embedding_rate.indexOf(value) === 0,      
+    },
+    {
+      title: '隐写分析模型',
+      dataIndex: 'model',
+      key: 'model',
+      filters: [
+        {
+            text: 'ZhuNet',
+            value: 'ZhuNet'
+        },{
+            text: 'SRNet',
+            value: 'SRNet',
+        },{
+            text: 'XuNet',
+            value: 'XuNet',
+        },{
+            text: 'YeNet',
+            value: 'YeNet',
+        },{
+            text: 'Yedroudj-Net',
+            value: 'YedNet',
+        }],
+      onFilter: (value, record) => record.model.indexOf(value) === 0,          
+    },
+    {
+      title: '结果',
+      children:[
+        {
+            title: 'Cover',
+            dataIndex: 'cover',
+            key: 'cover'
+        },{
+            title: 'Stego',
+            dataIndex: 'stego',
+            key: 'stego'
+        },{
+            title: 'Result',
+            dataIndex: 'result',
+            key: 'result'
+        }
+      ],
+    },
+];
 
 class ImageSteganalysis extends React.Component {
     constructor(props) {
@@ -88,8 +204,18 @@ class ImageSteganalysis extends React.Component {
         })
         // alert(response.data.result)
         console.log(response.data.result)
-        this.setState({result: response.data.result})
+        if(response.data.status === 'ok'){
+            this.setState({result: response.data.result})
+        }else{
+            Modal.error({
+                title: 'Error',
+                content: '抱歉，服务器内部错误，请重试！',
+            });
+            this.setState({step: 0})
+            this.setState({uploadFlieLst: []})
+        }
     }
+
     /* step1: 上传图片 */
     onChange(info) {
         const { status } = info.file;
@@ -118,7 +244,8 @@ class ImageSteganalysis extends React.Component {
             };            
             content =  (
                 <>
-                    <div style={{margin:"50px auto 20px", height: '35vh', width: '80vw'}}>
+                    {/* <Table dataSource={dataSource} columns={columns} /> */}
+                    <div style={{margin:"50px auto 20px", minHeight: '25vh', width: '80vw'}}>
                         <Dragger {...props} onChange={this.onChange} fileList={this.state.uploadFlieLst}>
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
@@ -145,7 +272,7 @@ class ImageSteganalysis extends React.Component {
                         </Form.Item>
                         <Form.Item
                             name="dataset"
-                            label="数据集"
+                            label="训练数据集"
                             rules={[{ required: true, message: 'Please select dataset!' }]}
                             initialValue='WOW'
                         >
@@ -164,7 +291,7 @@ class ImageSteganalysis extends React.Component {
                                 </OptGroup>
                             </Select>
                         </Form.Item>
-                        <Form.Item name={['embedding_rate']} label="嵌入率" rules={[{ required: true }]} initialValue='0.4'>
+                        <Form.Item name={['embedding_rate']} label="训练嵌入率" rules={[{ required: true }]} initialValue='0.4'>
                             <Select placeholder="select embedding rate">
                                 <Option value="0.2">0.2 bpp</Option>
                                 <Option value="0.4">0.4 bpp</Option>
@@ -228,7 +355,8 @@ class ImageSteganalysis extends React.Component {
         } else if (this.state.step === 3) {
             content = <>
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
-                        <Image src={"data:image/png;base64, " + this.state.result.image} />
+                        {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
+                        <Table dataSource={this.state.result} columns={columns} />
                         </div>
                         <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>重新检测</Button>
                     </>

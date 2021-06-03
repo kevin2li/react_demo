@@ -3,11 +3,14 @@ import base64
 import io
 import os
 import sys
+from collections import deque
 
 sys.path.append('..')
 import time
+import traceback
 from pathlib import Path
 
+import numpy as np
 import torch.nn.functional as F
 import yaml
 from flask import Flask, jsonify, request
@@ -18,6 +21,8 @@ from backend.pytorch_version.models import SRNet, XuNet, YedNet, YeNet, ZhuNet
 from backend.utils import img_preprocess, plot_group_bars
 
 root_dir = Path('/home/kevin2li/code/react_demo/')
+upload_dir = Path('upload')
+upload_dir.mkdir(parents=True, exist_ok=True)
 cfg_path = str(root_dir / 'backend/res/map.yml')
 with open(cfg_path) as f:
     cfg = yaml.safe_load(f)
@@ -26,15 +31,12 @@ with open(cfg_path) as f:
 app = Flask(__name__)
 
 state = {
-    'img_path': [],
+    'img_path': deque(),
     'models': [],
     'embedding_rate': 0.4,
     'dataset': 'WOW',
     'framework': 'pytorch'
 }
-
-
-
 
 @app.route('/time')
 def get_current_time():
@@ -65,15 +67,6 @@ def blog():
 def about():
     return jsonify({'current_tab': '6'})
 
-@app.route('/submit', methods=['GET', 'POST'])
-def submit():
-    print(request.method)
-    note = request.form.get('note')
-    gender = request.form.get('gender')
-    imgs = request.files['file']
-    imgs.save(f"upload/{imgs.filename}")
-    print(note, gender)
-    return {'name': 'Lucy'}
 
 @app.route('/image', methods=['GET'])
 def get_image():
@@ -87,7 +80,7 @@ def get_image():
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
     img = request.files['file']
-    save_path = f"upload/{img.filename}"
+    save_path = str(upload_dir / img.filename)
     img.save(save_path)
     state['img_path'].append(save_path)
     ic(state['img_path'])
@@ -104,39 +97,60 @@ def predict():
     ic(framework)
     ic(dataset)
     ic(embedding_rate)
-    response = {'status': 'ok'}
-    response['result'] = {}
-    if state['img_path'] and models and framework and dataset and embedding_rate:
-        models = models.split(',')
-        ic(models)
-        if isinstance(models, list):
-            for model_name in models:
-                # 实例化模型+加载权重
-                model = eval(model_name)()
-                ckpt_path = str(root_dir / cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name]) if cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name] else None
-                ic(ckpt_path)
-                if ckpt_path:
-                    model = model.load_from_checkpoint(ckpt_path)
-                # 推理
-                img = img_preprocess(state['img_path'][0])
-                logits = model(img)
-                ic(logits)
-                probs = F.softmax(logits, dim=1).squeeze()
-                ic(probs)
-                # 记录
-                response['result'][model_name] = probs.tolist()
-        else:
-            raise ValueError("not supported format yet")
-        ic(response['result'])
-        fig = plot_group_bars(response['result'])
-        fig.savefig('bar.png')
+    try:
+        response = {'status': 'ok'}
+        response['result'] = []
+        key = 1
+        if state['img_path'] and models and framework and dataset and embedding_rate:
+            models = models.split(',')
+            ic(models)
+            for img_path in state['img_path']:
+                for model_name in models:
+                    # 实例化模型+加载权重
+                    model = eval(model_name)()
+                    ckpt_path = str(root_dir / cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name]) if cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name] else None
+                    ic(ckpt_path)
+                    if ckpt_path:
+                        model = model.load_from_checkpoint(ckpt_path)
+                    # 推理
+                    img = img_preprocess(img_path)
+                    logits = model(img)
+                    ic(logits)
+                    probs = F.softmax(logits, dim=1).squeeze()
+                    ic(probs)
+                    # 记录
+                    response['result'].append({
+                        'key': key,
+                        'image': img_path.split('/')[-1],
+                        'framework': framework,
+                        'dataset': dataset,
+                        'embedding_rate': embedding_rate,
+                        'model': model_name,
+                        'cover': np.round(probs[0].item(), 3),
+                        'stego': np.round(probs[1].item(), 3),
+                        'result': 'cover' if probs[0] > probs[1] else 'stego'
+                    })
+                    key += 1
+            ic(response['result'])
 
-        img = Image.open('bar.png')
-        buffer = io.BytesIO()
-        img.save(buffer, format='PNG')
-        image_binary = buffer.getvalue()
-        encoded_img = base64.encodebytes(image_binary).decode('ascii')
-        response['result']['image'] = encoded_img
+            # fig = plot_group_bars(response['result'])
+            # fig.savefig('bar.png')
+
+            # img = Image.open('bar.png')
+            # buffer = io.BytesIO()
+            # img.save(buffer, format='PNG')
+            # image_binary = buffer.getvalue()
+            # encoded_img = base64.encodebytes(image_binary).decode('ascii')
+            # response['result']['image'] = encoded_img
+            
+            # post process
+            for img_path in state['img_path']:
+                os.remove(img_path)
+            state['img_path'].clear()
+
+    except:
+        traceback.print_exc()
+        response['status'] = 'failed'
     return jsonify(response)
 
 # @app.route('/predict', methods=['POST'])

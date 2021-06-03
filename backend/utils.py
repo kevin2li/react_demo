@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import torch
 import torchvision.transforms as T
+plt.style.use('seaborn')
 
 # %%
 eval_transforms = T.Compose([

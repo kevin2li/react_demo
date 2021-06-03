@@ -64,7 +64,7 @@ class App extends React.Component {
           </Router>
         </Header>
           {content}
-        <Footer style={{ textAlign: 'center' }}>Ant Design ©2021 Created by Kevin</Footer>
+        <Footer style={{ textAlign: 'center' }}>Integrated Steganalysis Platform ©2021 Created by Kevin Li</Footer>
       </Layout>
     )
   }
