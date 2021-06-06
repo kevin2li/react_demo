@@ -174,8 +174,6 @@ class ImageSteganalysis extends React.Component {
             status: '',
             result: null
         }
-        this.onFinish = this.onFinish.bind(this);
-        this.onChange = this.onChange.bind(this);
         this.formRef = React.createRef();
     }
     next = () => {
@@ -204,7 +202,7 @@ class ImageSteganalysis extends React.Component {
         this.formRef.current.resetFields();
     };
     /* step2：表单上传 */
-    async onFinish(values) {
+    onFinish = async (values) => {
         console.log(values)
         this.setState({ step: (this.state.step + 1) % 4 })
         var bodyFormData = new FormData()
@@ -233,7 +231,7 @@ class ImageSteganalysis extends React.Component {
     }
 
     /* step1: 上传图片 */
-    onChange(info) {
+    onChange = (info) => {
         const { status } = info.file;
         if (status !== 'uploading') {
           console.log(info.file, info.fileList);
@@ -245,7 +243,8 @@ class ImageSteganalysis extends React.Component {
         }
         this.setState({uploadFlieLst:[...info.fileList]})
         console.log(this.state.uploadFlieLst)
-      }
+    }
+    
     render() {
         var content;
 
@@ -378,8 +377,8 @@ class ImageSteganalysis extends React.Component {
             }
             console.log(data)
             content = <>
-                        <GroupedBar data={data}/>
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
+                        <GroupedBar data={data} height={1800} width={1200}/>
                         {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
                         <Table dataSource={this.state.result} columns={columns} bordered pagination={{ position: ['bottomCenter']}}/>
                         </div>

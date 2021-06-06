@@ -29,8 +29,8 @@ class GroupedBar extends React.Component {
 		});
 		return (
 			<Chart
-				height={600}
-				width={1200}
+				height={this.props.height}
+				width={this.props.width}
 				data={dv}
 				autoFit
 			>
