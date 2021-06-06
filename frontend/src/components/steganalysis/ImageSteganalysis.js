@@ -2,6 +2,7 @@ import React from 'react';
 import { Steps, Typography, Form, Result, Button, Spin, Select, message, Upload, Image, Modal, Table } from 'antd'
 import axios from 'axios'
 import { InboxOutlined } from '@ant-design/icons';
+import GroupedBar from './GroupedBar';
 const { Step } = Steps;
 const { Title, Paragraph} = Typography;
 const { Option, OptGroup } = Select;
@@ -170,6 +171,7 @@ class ImageSteganalysis extends React.Component {
                 2: ['Finished', 'Finished', 'In Progess', 'Waiting'],
                 3: ['Finished', 'Finished', 'Finished', 'In Progess'],
             },
+            status: '',
             result: null
         }
         this.onFinish = this.onFinish.bind(this);
@@ -190,7 +192,7 @@ class ImageSteganalysis extends React.Component {
             this.setState({ step: (this.state.step + 1) % 4 })
         }else if(this.state.step === 3) {
             this.setState({ step: (this.state.step + 1) % 4 })
-            this.setState({result: null})
+            this.setState({status: ''})
             this.setState({uploadFlieLst: []})
         }
     }
@@ -216,9 +218,9 @@ class ImageSteganalysis extends React.Component {
             data: bodyFormData,
             headers: { "Content-Type": "multipart/form-data" },
         })
-        // alert(response.data.result)
         console.log(response.data.result)
         if(response.data.status === 'ok'){
+            this.setState({status: 'ok'})
             this.setState({result: response.data.result})
         }else{
             Modal.error({
@@ -258,8 +260,7 @@ class ImageSteganalysis extends React.Component {
             };
             content =  (
                 <>
-                    {/* <Column {...config}/> */}
-                    {/* <Grouped /> */}
+                    {/* <Demo data={data}/> */}
                     <div style={{margin:"50px auto 20px", minHeight: '25vh', width: '80vw'}}>
                         <Dragger {...props} onChange={this.onChange} fileList={this.state.uploadFlieLst}>
                         <p className="ant-upload-drag-icon">
@@ -350,7 +351,7 @@ class ImageSteganalysis extends React.Component {
         } else if (this.state.step === 2) {
             content =  (
                     <div style={{ textAlign: 'center' }}>
-                        <div style={{ height: '50px', lineHeight: '50px', margin: '40px 0 0 0', visibility: this.state.result ? 'hidden': 'visible', display: this.state.result ? 'none' : 'block'}}>
+                        <div style={{ height: '50px', lineHeight: '50px', margin: '40px 0 0 0', visibility: this.state.status ? 'hidden': 'visible', display: this.state.status ? 'none' : 'block'}}>
                             <Spin style={{padding: "0 30px" }} /><span>检测中,请稍候...</span><br />
                         </div>
                         <Result
@@ -363,12 +364,21 @@ class ImageSteganalysis extends React.Component {
                                 </Button>,
                                 // <Button key="buy">Buy Again</Button>,
                             ]}
-                            style={{visibility: this.state.result ? 'visible': 'hidden'}}
+                            style={{visibility: this.state.status ? 'visible': 'hidden'}}
                         />
                     </div>
             )
         } else if (this.state.step === 3) {
+            var data = []
+            for (let i of this.state.result){
+                var label = [i['image'], i['framework'], i['embedding_rate'], i['dataset'], i['model']].join('-')
+                data.push({
+                    label: label, 'cover': i['cover'], 'stego': i['stego']
+                })
+            }
+            console.log(data)
             content = <>
+                        <GroupedBar data={data}/>
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
                         {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
                         <Table dataSource={this.state.result} columns={columns} bordered pagination={{ position: ['bottomCenter']}}/>

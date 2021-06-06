@@ -20,7 +20,7 @@ from PIL import Image
 from backend.pytorch_version.models import SRNet, XuNet, YedNet, YeNet, ZhuNet
 from backend.utils import img_preprocess, plot_group_bars
 
-root_dir = Path('/home/kevin2li/code/react_demo/')
+root_dir = Path('/root/react_demo/')
 upload_dir = Path('upload')
 upload_dir.mkdir(parents=True, exist_ok=True)
 cfg_path = str(root_dir / 'backend/res/map.yml')
@@ -152,17 +152,6 @@ def predict():
         traceback.print_exc()
         response['status'] = 'failed'
     return jsonify(response)
-
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     img = request.files['file']
-#     save_path = f"upload/{img.filename}"
-#     img.save(save_path)
-#     img = img_preprocess(save_path)
-#     logits = model(img)
-#     probs = F.softmax(logits, dim=1)
-#     ic(probs)
-#     return jsonify({'probs': probs.tolist()})
 
 if __name__ == '__main__':
     app.run(debug=True)
