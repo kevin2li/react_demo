@@ -7,9 +7,7 @@ import Download from './views/Download'
 import Steganography from './views/Steganography'
 import Steganalysis from './views/Steganalysis'
 import About from './views/About'
-
 const { Header, Footer } = Layout;
-
 
 class App extends React.Component {
   constructor(props) {
@@ -47,7 +45,7 @@ class App extends React.Component {
     } else if (this.state.current_tab === '6') {
       content = <About></About>
     }
-    
+
     return (
       <Layout style={{minHeight: '100%'}}>
         <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%' }}>

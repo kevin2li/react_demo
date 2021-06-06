@@ -7,6 +7,7 @@ const { Title, Paragraph} = Typography;
 const { Option, OptGroup } = Select;
 const { Dragger } = Upload;
 
+
 // Form begin
 const layout = {
     labelCol: { span: 8 },
@@ -33,7 +34,20 @@ const columns = [
       title: '图片',
       dataIndex: 'image',
       key: 'image',
-      sorter: (a, b) => a.image.length - b.image.length,
+      sorter: (a, b) => {
+          var filename1 = a.image.split('.')[0]
+          var filename2 = b.image.split('.')[0]
+        // 文件名为数字
+          if(!isNaN(filename1) && !isNaN(filename2)){
+            return eval(filename1) - eval(filename2)
+          }
+        // 文件名为字符串 
+          if(filename1 > filename2){
+            return 1
+          }else{
+            return -1
+          }
+      },
       sortDirections: ['descend', 'ascend'],
       defaultSortOrder: 'descend'
     },
@@ -241,10 +255,11 @@ class ImageSteganalysis extends React.Component {
                 onDrop(e) {
                   console.log('Dropped files', e.dataTransfer.files);
                 },
-            };            
+            };
             content =  (
                 <>
-                    {/* <Table dataSource={dataSource} columns={columns} /> */}
+                    {/* <Column {...config}/> */}
+                    {/* <Grouped /> */}
                     <div style={{margin:"50px auto 20px", minHeight: '25vh', width: '80vw'}}>
                         <Dragger {...props} onChange={this.onChange} fileList={this.state.uploadFlieLst}>
                         <p className="ant-upload-drag-icon">
@@ -356,7 +371,7 @@ class ImageSteganalysis extends React.Component {
             content = <>
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
                         {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
-                        <Table dataSource={this.state.result} columns={columns} />
+                        <Table dataSource={this.state.result} columns={columns} bordered pagination={{ position: ['bottomCenter']}}/>
                         </div>
                         <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>重新检测</Button>
                     </>
