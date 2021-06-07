@@ -193,6 +193,7 @@ class ImageSteganalysis extends React.Component {
         }else if(this.state.step === 3) {
             this.setState({ step: (this.state.step + 1) % 4 })
             this.setState({status: ''})
+            this.setState({selected_data: []})
             this.setState({uploadFlieLst: []})
         }
     }
@@ -301,7 +302,7 @@ class ImageSteganalysis extends React.Component {
                 <>
                     <Form {...layout} ref={this.formRef} name="nest-messages" initialValues={{ remember: true }} onFinish={this.onFinish} validateMessages={validateMessages} style={{ margin: "30px 0 0 0" }}>
                         <Form.Item name={['framework']} label="框架" rules={[{ required: true }]} initialValue='pytorch'>
-                            <Select placeholder="select framework" defaultValue='pytorch'>
+                            <Select placeholder="select framework">
                                 <Option value="pytorch">pytorch</Option>
                                 <Option value="tensorflow">tensorflow</Option>
                             </Select>
@@ -310,12 +311,12 @@ class ImageSteganalysis extends React.Component {
                             name="dataset"
                             label="训练数据集"
                             rules={[{ required: true, message: 'Please select dataset!' }]}
-                            initialValue='WOW'
+                            initialValue={['WOW']}
                         >
-                            <Select placeholder="select dataset" defaultValue='WOW'>
+                            <Select mode="multiple" placeholder="select dataset">
                                 <OptGroup label="自适应隐写">
                                     <Option value="WOW">WOW</Option>
-                                    <Option value="SUNIWARD">SUNIWARD</Option>
+                                    <Option value="S-UNIWARD">S-UNIWARD</Option>
                                     <Option value="HILL">HILL</Option>
                                     <Option value="HUGO">HUGO</Option>
                                     <Option value="MG">MG</Option>
@@ -327,8 +328,8 @@ class ImageSteganalysis extends React.Component {
                                 </OptGroup>
                             </Select>
                         </Form.Item>
-                        <Form.Item name={['embedding_rate']} label="训练嵌入率" rules={[{ required: true }]} initialValue='0.4'>
-                            <Select placeholder="select embedding rate">
+                        <Form.Item name={['embedding_rate']} label="训练嵌入率" rules={[{ required: true }]} initialValue={['0.4']}>
+                            <Select mode="multiple" placeholder="select embedding rate">
                                 <Option value="0.2">0.2 bpp</Option>
                                 <Option value="0.4">0.4 bpp</Option>
                                 <Option value="0.6">0.6 bpp</Option>
@@ -339,14 +340,13 @@ class ImageSteganalysis extends React.Component {
                             name="models"
                             label="隐写分析模型"
                             rules={[{ required: true, message: 'Please select model!' }]}
-                            initialValue='ZhuNet'
+                            initialValue={['ZhuNet']}
                         >
                             <Select
                                 mode="multiple"
                                 allowClear
                                 style={{ width: '100%' }}
                                 placeholder="Please select model"
-                                defaultValue={['ZhuNet']}
                             >
                                 <Option value="ZhuNet">ZhuNet</Option>
                                 <Option value="SRNet">SRNet</Option>
@@ -389,7 +389,7 @@ class ImageSteganalysis extends React.Component {
                     </div>
             )
         } else if (this.state.step === 3) {
-            var data = []
+            // var data = []
             // for (let i of this.state.result){
             //     var label = [i['image'], i['framework'], i['embedding_rate'], i['dataset'], i['model']].join('-')
             //     data.push({
@@ -403,7 +403,7 @@ class ImageSteganalysis extends React.Component {
             }
             content = <>
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
-                          <GroupedBar data={this.state.selected_data} height={data.length * 60 > 400 ? data.length * 60 : 400} width={1200}/>
+                          <GroupedBar data={this.state.selected_data} height={this.state.selected_data.length * 30 > 400 ? this.state.selected_data.length * 30 : 400} width={1200}/>
                           {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
                           <Table rowSelection={{type: 'checkbox', ...rowSelection,}} dataSource={this.state.result} columns={columns} bordered pagination={{ position: ['bottomCenter']}}/>
                         </div>
