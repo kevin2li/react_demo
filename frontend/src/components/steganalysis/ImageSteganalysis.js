@@ -49,6 +49,7 @@ const columns = [
             return -1
           }
       },
+      onFilter: (value, record) => record.framework.indexOf(value) === 0,
       sortDirections: ['descend', 'ascend'],
       defaultSortOrder: 'descend'
     },
@@ -172,7 +173,8 @@ class ImageSteganalysis extends React.Component {
                 3: ['Finished', 'Finished', 'Finished', 'In Progess'],
             },
             status: '',
-            result: null
+            result: null,
+            selected_data: []
         }
         this.formRef = React.createRef();
     }
@@ -245,9 +247,28 @@ class ImageSteganalysis extends React.Component {
         console.log(this.state.uploadFlieLst)
     }
     
+    /* 表格多选 */
+    onSelectChange = (selectedRowKeys, selectedRows) => {
+      console.log('selectedRowKeys:', selectedRowKeys, 'selectedRows: ', selectedRows);
+      var data = []
+      for(let row of selectedRows){
+          // console.log("row:", row)
+          const label = [row['image'], row['framework'], row['embedding_rate'], row['dataset'], row['model']].join('-')
+          // console.log('label:', label)
+          data.push({
+            label: label,
+            'cover': row['cover'],
+            'stego': row['stego']
+          })
+      }
+      // console.log("data:", data)
+      this.setState({
+        selected_data: data
+      })
+    }
+
     render() {
         var content;
-
         if (this.state.step === 0) {
             const props = {
                 name: 'file',
@@ -369,18 +390,22 @@ class ImageSteganalysis extends React.Component {
             )
         } else if (this.state.step === 3) {
             var data = []
-            for (let i of this.state.result){
-                var label = [i['image'], i['framework'], i['embedding_rate'], i['dataset'], i['model']].join('-')
-                data.push({
-                    label: label, 'cover': i['cover'], 'stego': i['stego']
-                })
+            // for (let i of this.state.result){
+            //     var label = [i['image'], i['framework'], i['embedding_rate'], i['dataset'], i['model']].join('-')
+            //     data.push({
+            //         label: label, 'cover': i['cover'], 'stego': i['stego']
+            //     })
+            // }
+            // console.log(data)
+
+            const rowSelection = {
+                onChange: this.onSelectChange
             }
-            console.log(data)
             content = <>
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
-                        <GroupedBar data={data} height={1800} width={1200}/>
-                        {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
-                        <Table dataSource={this.state.result} columns={columns} bordered pagination={{ position: ['bottomCenter']}}/>
+                          <GroupedBar data={this.state.selected_data} height={data.length * 60 > 400 ? data.length * 60 : 400} width={1200}/>
+                          {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
+                          <Table rowSelection={{type: 'checkbox', ...rowSelection,}} dataSource={this.state.result} columns={columns} bordered pagination={{ position: ['bottomCenter']}}/>
                         </div>
                         <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>重新检测</Button>
                     </>
@@ -389,6 +414,7 @@ class ImageSteganalysis extends React.Component {
             <>
             <Typography>
                 <Title style={{ textAlign: 'center' }}>图像隐写分析示例</Title>
+                <blockquote style={{ textAlign: 'center' }}>说明：请使用256×256灰度图进行测试</blockquote>
                 {/* <Paragraph>图像隐写分析是检测图像中是否含有秘密信息的关键技术，本平台提供了五种隐写分析模型(ZhuNet、SRNet、XuNet、YeNet、Yedroudj-Net)在8种隐写数据集(WOW、S-UNIWARD、UT-GAN等)上的预训练模型，欢迎使用！</Paragraph> */}
             </Typography>
             <Steps current={this.state.step}>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Layout, Menu, Typography } from 'antd';
-import axios from 'axios';
 import Index from './views/Index'
 import Blog from './views/Blog'
 import Download from './views/Download'
