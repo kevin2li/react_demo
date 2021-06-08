@@ -1,12 +1,26 @@
 import React from 'react';
-import { Layout, Tabs, Typography} from 'antd';
-const { TabPane } = Tabs;
+import { Layout, Tabs, Menu } from 'antd';
+import {SettingOutlined } from '@ant-design/icons';
+import IntroSteganography from '../components/steganography/IntroSteganography';
 const { Content } = Layout;
-const { Title, Paragraph, Text} = Typography;
+const { SubMenu } = Menu;
 
 class Steganography extends React.Component {
-
+    constructor(props) {
+        super(props);
+        this.state = {
+            current_menu: '1'
+        }
+    }
+    handleClick = e => {
+        console.log('click ', e);
+        this.setState({ current_menu: e.key });
+    };
     render() {
+        var content = null
+        if(this.state.current_menu == '1'){
+            content = <IntroSteganography></IntroSteganography>
+        }
         return (
             <Layout style={{ padding: '0 24px', minHeight: '83vh' }}>
                 <Content
@@ -16,37 +30,68 @@ class Steganography extends React.Component {
                         margin: "85px 0px 0 0",
                         height: '100%',
                         width: '100%'
-                    }}                    
+                    }}
                 >
-                    <Tabs tabPosition="top" onChange={this.handleTabClick}>
-                        <TabPane tab="简介" key="3">
-                            <Typography>
-                                <Title>背景介绍</Title>
-                                <Paragraph>
-                                    隐写术是关于信息隐藏，即不让计划的接收者之外的任何人知道信息的传递事件（而不只是信息的内容）的一门技巧与科学,英文写作Steganography。而密码编码是关于信息加密，即设想到信息可能会被接受者之外的第三方获取而采取的一种措施，通过通信双方预先设定的规则对信息进行加密，使第三方即使获取到信息也无法理解其含义。所以隐写术重点在于信息的隐藏，密码编码重点在于信息的加密，这两者属于完全不同的概念。
-                            </Paragraph>
-                                <Title>图片隐写术的分类</Title>
-                                <Paragraph>
-                                    一、附加式的图片隐写<br />
-                                二、基于文件结构的图片隐写<br />
-                                三、基于LSB原理的图片隐写<br />
-                                四、基于DCT域的JPG图片隐写<br />
-                                五、数字水印的隐写<br />
-                                六、图片容差的隐写<br />
-                                </Paragraph>
-                            </Typography>
-                        </TabPane>
-                        <TabPane tab="文本隐写" key="1" >
-                            <Typography>
-                                <Title style={{ textAlign: 'center' }}>文本隐写Demo</Title>
-                            </Typography>
-                        </TabPane>
-                        <TabPane tab="图像隐写" key="2">
-                            <Typography>
-                                <Title style={{ textAlign: 'center' }}>图像隐写Demo</Title>
-                            </Typography>
-                        </TabPane>
-                    </Tabs>
+                    <Menu mode="horizontal" selectedKeys={[this.state.current_menu]} onClick={this.handleClick}>
+                        <Menu.Item key="1">
+                            简介
+                        </Menu.Item>
+                        <SubMenu key="2" icon={<SettingOutlined />} title="图像隐写">
+
+                            <SubMenu key="Traditional" icon={<SettingOutlined />} title="传统隐写">
+                                <Menu.Item key="LSB">
+                                        LSB
+                                </Menu.Item>
+                                <Menu.Item key="LSBM">
+                                        LSBM
+                                </Menu.Item>
+                            </SubMenu>
+                            <SubMenu key="Adaptive" icon={<SettingOutlined />} title="自适应隐写">
+                                <Menu.Item key="WOW">
+                                    WOW
+                                </Menu.Item>
+                                <Menu.Item key="S-UNIWARD">
+                                    S-UNIWARD
+                                </Menu.Item>
+                                <Menu.Item key="HILL">
+                                    HILL
+                                </Menu.Item>
+                                <Menu.Item key="HUGO">
+                                    HUGO
+                                </Menu.Item>
+                                <Menu.Item key="MG">
+                                    MG
+                                </Menu.Item>
+                                <Menu.Item key="MVG">
+                                    MVG
+                                </Menu.Item>
+                                <Menu.Item key="MiPOD">
+                                    MiPOD
+                                </Menu.Item>
+                                <Menu.Item key="UT-GAN">
+                                    UT-GAN
+                                </Menu.Item>
+                            </SubMenu>
+                            <Menu.Item key="HidingImage">
+                                以图藏图
+                            </Menu.Item>
+                        </SubMenu>
+                        <SubMenu key="3" icon={<SettingOutlined />} title="文本隐写">
+                                <Menu.Item key="RNN-Stega">
+                                        RNN-Stega
+                                </Menu.Item>
+                                <Menu.Item key="GPT-Stega">
+                                        GPT-Stega
+                                </Menu.Item>
+                                <Menu.Item key="VAE-Stega">
+                                        VAE-Stega
+                                </Menu.Item>
+                                <Menu.Item key="MM-Stega">
+                                        MM-Stega
+                                </Menu.Item>
+                        </SubMenu>
+                    </Menu>
+                    {content}
                 </Content>
             </Layout>
         )
