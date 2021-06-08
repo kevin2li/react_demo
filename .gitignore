@@ -5,5 +5,6 @@
 backend/upload
 backend/*.png
 **/**/*test*
+**/**/*lock*
 backend/pytorch_version/checkpoints/**/*pt
 backend/tensorflow_version/checkpoints/**/*hdf5

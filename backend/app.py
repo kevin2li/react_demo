@@ -20,7 +20,7 @@ from PIL import Image
 from backend.pytorch_version.models import SRNet, XuNet, YedNet, YeNet, ZhuNet
 from backend.utils import img_preprocess, plot_group_bars
 
-root_dir = Path('/root/react_demo/')
+root_dir = Path('/home/kevin2li/code/react_demo/')
 upload_dir = Path('upload')
 upload_dir.mkdir(parents=True, exist_ok=True)
 cfg_path = str(root_dir / 'backend/res/map.yml')
