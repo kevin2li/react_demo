@@ -20,7 +20,7 @@ from PIL import Image
 from backend.pytorch_version.models import SRNet, XuNet, YedNet, YeNet, ZhuNet
 from backend.utils import img_preprocess, plot_group_bars
 
-root_dir = Path('/home/kevin2li/code/react_demo/')
+root_dir = Path('/root/react_demo/')
 upload_dir = Path('upload')
 upload_dir.mkdir(parents=True, exist_ok=True)
 cfg_path = str(root_dir / 'backend/res/map.yml')
@@ -89,48 +89,48 @@ def upload_image():
 @app.route('/predict', methods=['POST'])
 def predict():
     ic(vars(request))
-    models = request.form.get('models')
-    dataset = request.form.get('dataset')
-    embedding_rate = request.form.get('embedding_rate')
+    models = request.form.get('models').split(',')
+    datasets = request.form.get('dataset').split(',')
+    embedding_rates = request.form.get('embedding_rate').split(',')
     framework = request.form.get('framework')
     ic(models)
     ic(framework)
-    ic(dataset)
-    ic(embedding_rate)
+    ic(datasets)
+    ic(embedding_rates)
     try:
         response = {'status': 'ok'}
         response['result'] = []
         key = 1
-        if state['img_path'] and models and framework and dataset and embedding_rate:
-            models = models.split(',')
-            ic(models)
+        if state['img_path'] and models and framework and datasets and embedding_rates:
             for img_path in state['img_path']:
-                for model_name in models:
-                    # 实例化模型+加载权重
-                    model = eval(model_name)()
-                    ckpt_path = str(root_dir / cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name]) if cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name] else None
-                    ic(ckpt_path)
-                    if ckpt_path:
-                        model = model.load_from_checkpoint(ckpt_path)
-                    # 推理
-                    img = img_preprocess(img_path)
-                    logits = model(img)
-                    ic(logits)
-                    probs = F.softmax(logits, dim=1).squeeze()
-                    ic(probs)
-                    # 记录
-                    response['result'].append({
-                        'key': key,
-                        'image': img_path.split('/')[-1],
-                        'framework': framework,
-                        'dataset': dataset,
-                        'embedding_rate': embedding_rate,
-                        'model': model_name,
-                        'cover': np.round(probs[0].item(), 3),
-                        'stego': np.round(probs[1].item(), 3),
-                        'result': 'cover' if probs[0] > probs[1] else 'stego'
-                    })
-                    key += 1
+                for dataset in datasets:
+                    for embedding_rate in embedding_rates:
+                        for model_name in models:
+                            # 实例化模型+加载权重
+                            model = eval(model_name)()
+                            ckpt_path = str(root_dir / cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name]) if cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name] else None
+                            ic(ckpt_path)
+                            if ckpt_path:
+                                model = model.load_from_checkpoint(ckpt_path)
+                            # 推理
+                            img = img_preprocess(img_path)
+                            logits = model(img)
+                            ic(logits)
+                            probs = F.softmax(logits, dim=1).squeeze()
+                            ic(probs)
+                            # 记录
+                            response['result'].append({
+                                'key': key,
+                                'image': img_path.split('/')[-1],
+                                'framework': framework,
+                                'dataset': dataset,
+                                'embedding_rate': embedding_rate,
+                                'model': model_name,
+                                'cover': np.round(probs[0].item(), 3),
+                                'stego': np.round(probs[1].item(), 3),
+                                'result': 'cover' if probs[0] > probs[1] else 'stego'
+                            })
+                            key += 1
             ic(response['result'])
 
             # fig = plot_group_bars(response['result'])
@@ -145,24 +145,14 @@ def predict():
             
             # post process
             for img_path in state['img_path']:
-                os.remove(img_path)
+                if os.path.exists(img_path):
+                    os.remove(img_path)
             state['img_path'].clear()
 
     except:
         traceback.print_exc()
         response['status'] = 'failed'
     return jsonify(response)
-
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     img = request.files['file']
-#     save_path = f"upload/{img.filename}"
-#     img.save(save_path)
-#     img = img_preprocess(save_path)
-#     logits = model(img)
-#     probs = F.softmax(logits, dim=1)
-#     ic(probs)
-#     return jsonify({'probs': probs.tolist()})
 
 if __name__ == '__main__':
     app.run(debug=True)
