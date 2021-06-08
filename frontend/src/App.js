@@ -31,8 +31,9 @@ class App extends React.Component {
     this.setState({ current_tab: '1' })
   }
 
-  switch_nav = async ({ item, key, keyPath, domEvent }) => {
-    this.setState({ current_tab: key })
+  switch_nav =  e => {
+    // console.log(e)
+    this.setState({ current_tab: e.key })
     // const response = await axios({
     //   method: "get",
     //   url: map[key],
@@ -61,7 +62,7 @@ class App extends React.Component {
       <Layout style={{minHeight: '100%'}}>
         <Header className="header" style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
             <div className="logo"><Link to="/index" onClick={this.clickLogo}>集成隐写分析平台</Link></div>
-            <Menu theme="dark" ref={this.menuRef} mode="horizontal" defaultSelectedKeys={[this.state.current_tab]} onSelect={this.switch_nav}>
+            <Menu theme="dark" ref={this.menuRef} mode="horizontal" selectedKeys={[this.state.current_tab]} onSelect={this.switch_nav}>
               <Menu.Item key="1" onClick={this.switch_nav}><Link >首页</Link></Menu.Item>
               <Menu.Item key="2" onClick={this.switch_nav}><Link >隐写术</Link></Menu.Item>
               <Menu.Item key="3" onClick={this.switch_nav}><Link >隐写分析</Link></Menu.Item>
