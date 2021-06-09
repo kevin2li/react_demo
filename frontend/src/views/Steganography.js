@@ -13,14 +13,26 @@ class Steganography extends React.Component {
         }
     }
     handleClick = e => {
-        console.log('click ', e);
+        // console.log('click ', e);
         this.setState({ current_menu: e.key });
     };
     render() {
         var content = null
-        if(this.state.current_menu == '1'){
+        if(this.state.current_menu === '1'){
             content = <IntroSteganography></IntroSteganography>
+        }else if(this.state.current_menu === 'LSB'){
+            content = <>LSB正在开发中...</>
+        }else if(this.state.current_menu === 'LSBM'){
+            content = <>LSBM正在开发中...</>
+        }else if(this.state.current_menu === 'WOW'){
+            content = <>WOW正在开发中...</>
+        }else if(this.state.current_menu === 'HidingImage'){
+            content = <>以图藏图正在开发中...</>
         }
+        var a = [1, 2, 3, 4, 5, 6]
+        const url = window.URL.createObjectURL(
+            new Blob([this.state.result]),
+        );
         return (
             <Layout style={{ padding: '0 24px', minHeight: '83vh' }}>
                 <Content
@@ -91,6 +103,7 @@ class Steganography extends React.Component {
                                 </Menu.Item>
                         </SubMenu>
                     </Menu>
+                    <a href={url} download='test.json'>Download file</a>
                     {content}
                 </Content>
             </Layout>
