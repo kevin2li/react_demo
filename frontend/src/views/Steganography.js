@@ -103,7 +103,6 @@ class Steganography extends React.Component {
                                 </Menu.Item>
                         </SubMenu>
                     </Menu>
-                    <a href={url} download='test.json'>Download file</a>
                     {content}
                 </Content>
             </Layout>

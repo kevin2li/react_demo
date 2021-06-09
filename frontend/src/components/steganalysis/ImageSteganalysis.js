@@ -451,7 +451,6 @@ class ImageSteganalysis extends React.Component {
             // );
             const rowSelection = {
                 onChange: this.onSelectChange,
-                // selectedRowKeys: ['1', '2', '3']
             }
             const download = () => {
               var url = window.URL.createObjectURL(
