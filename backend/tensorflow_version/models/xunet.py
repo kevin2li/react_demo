@@ -2,7 +2,6 @@ import os
 import sys
 
 sys.path.append(os.path.abspath('../../..'))
-
 import glob
 from pathlib import Path
 
@@ -11,17 +10,18 @@ import numpy
 import numpy as np
 import tensorflow as tf
 import tqdm
+from backend import root_dir
 from keras import backend as K
 from keras.utils import np_utils
 from PIL import Image
-from react_demo import root_dir
 from tensorflow.keras.layers import (AveragePooling2D, BatchNormalization,
                                      Concatenate, Conv2D, Dense,
                                      GlobalAveragePooling2D, Lambda, ReLU)
 from tqdm import tqdm
+
 __all__ = ['XuNet']
 
-srm_weights = np.load(str(root_dir / '/home/kevin2li/code/react_demo/backend/res/SRM_Kernels.npy'))
+srm_weights = np.load(str(root_dir / 'backend/res/SRM_Kernels.npy'))
 biasSRM = numpy.ones(30)
 
 T3 = 3

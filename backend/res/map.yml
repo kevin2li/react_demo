@@ -256,8 +256,8 @@ framework:
             model:
               ZhuNet: null
               SRNet: null
-              XuNet: backend/tensorflow_version/checkpoints/xunet/saved-model-117-0.85.hdf5
-              YeNet: null
+              XuNet: backend/tensorflow_version/checkpoints/xunet/wow-saved-model-115-0.85.hdf5
+              YeNet: backend/tensorflow_version/checkpoints/yenet/wow-saved-model-301-0.88.hdf5
               YedNet: null
           '0.6':
             model:
@@ -286,8 +286,8 @@ framework:
             model:
               ZhuNet: null
               SRNet: null
-              XuNet: null
-              YeNet: null
+              XuNet: backend/tensorflow_version/checkpoints/xunet/suniward-saved-model-257-0.82.hdf5
+              YeNet: backend/tensorflow_version/checkpoints/yenet/suniward-saved-model-114-0.85.hdf5
               YedNet: null
           '0.6':
             model:
@@ -316,8 +316,8 @@ framework:
             model:
               ZhuNet: null
               SRNet: null
-              XuNet: null
-              YeNet: null
+              XuNet: backend/tensorflow_version/checkpoints/xunet/hill-saved-model-252-0.77.hdf5
+              YeNet: backend/tensorflow_version/checkpoints/yenet/hill-saved-model-110-0.79.hdf5
               YedNet: null
           '0.6':
             model:
@@ -346,8 +346,8 @@ framework:
             model:
               ZhuNet: null
               SRNet: null
-              XuNet: null
-              YeNet: null
+              XuNet: backend/tensorflow_version/checkpoints/xunet/hugo-saved-model-38-0.80.hdf5
+              YeNet: backend/tensorflow_version/checkpoints/yenet/hugo-saved-model-109-0.81.hdf5
               YedNet: null
           '0.6':
             model:
@@ -376,8 +376,8 @@ framework:
             model:
               ZhuNet: null
               SRNet: null
-              XuNet: null
-              YeNet: null
+              XuNet: backend/tensorflow_version/checkpoints/xunet/mg-4saved-model-66-0.91.hdf5
+              YeNet: backend/tensorflow_version/checkpoints/yenet/mg-saved-model-129-0.93.hdf5
               YedNet: null
           '0.6':
             model:
@@ -406,8 +406,8 @@ framework:
             model:
               ZhuNet: null
               SRNet: null
-              XuNet: null
-              YeNet: null
+              XuNet: backend/tensorflow_version/checkpoints/xunet/mvg-saved-model-140-0.74.hdf5
+              YeNet: backend/tensorflow_version/checkpoints/yenet/mvg-saved-model-226-0.78.hdf5
               YedNet: null
           '0.6':
             model:
@@ -436,8 +436,8 @@ framework:
             model:
               ZhuNet: null
               SRNet: null
-              XuNet: null
-              YeNet: null
+              XuNet: backend/tensorflow_version/checkpoints/xunet/mipod-saved-model-217-0.76.hdf5
+              YeNet: backend/tensorflow_version/checkpoints/yenet/mipod-saved-model-120-0.79.hdf5
               YedNet: null
           '0.6':
             model:
@@ -466,8 +466,8 @@ framework:
             model:
               ZhuNet: null
               SRNet: null
-              XuNet: null
-              YeNet: null
+              XuNet: backend/tensorflow_version/checkpoints/xunet/utgan-saved-model-158-0.83.hdf5
+              YeNet: backend/tensorflow_version/checkpoints/yenet/utgan-saved-model-123-0.82.hdf5
               YedNet: null
           '0.6':
             model:

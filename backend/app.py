@@ -18,9 +18,10 @@ from icecream import ic
 from PIL import Image
 
 from backend.pytorch_version.models import SRNet, XuNet, YedNet, YeNet, ZhuNet
+from backend.tensorflow_version.models import XuNet as XuNet_tf, YeNet as YeNet_tf
 from backend.utils import img_preprocess, plot_group_bars
-
-root_dir = Path('/home/kevin2li/code/react_demo/')
+from backend import root_dir
+# %%
 upload_dir = Path('upload')
 upload_dir.mkdir(parents=True, exist_ok=True)
 cfg_path = str(root_dir / 'backend/res/map.yml')
@@ -107,17 +108,29 @@ def predict():
                     for embedding_rate in embedding_rates:
                         for model_name in models:
                             # 实例化模型+加载权重
-                            model = eval(model_name)()
-                            ckpt_path = str(root_dir / cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name]) if cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name] else None
-                            ic(ckpt_path)
-                            if ckpt_path:
-                                model = model.load_from_checkpoint(ckpt_path)
-                            # 推理
-                            img = img_preprocess(img_path)
-                            logits = model(img)
-                            ic(logits)
-                            probs = F.softmax(logits, dim=1).squeeze()
-                            ic(probs)
+                            if framework == 'pytorch':
+                                model = eval(model_name)()
+                                ckpt_path = str(root_dir / cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name]) if cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name] else None
+                                ic(ckpt_path)
+                                if ckpt_path:
+                                    model = model.load_from_checkpoint(ckpt_path)
+                                # 推理
+                                img = img_preprocess(img_path)
+                                logits = model(img)
+                                ic(logits)
+                                probs = F.softmax(logits, dim=1).squeeze()
+                                ic(probs)
+                            elif framework == 'tensorflow':
+                                model = eval(f"{model_name}_tf")()
+                                ckpt_path = str(root_dir / cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name]) if cfg['framework'][framework]['dataset'][dataset]['embedding_rate'][embedding_rate]['model'][model_name] else None
+                                ic(ckpt_path)
+                                if ckpt_path:
+                                    model.load_weights(ckpt_path)
+                                
+                                img = np.array(Image.open(img_path))
+                                probs = model(img).squeeze()
+                                ic(probs)
+
                             # 记录
                             response['result'].append({
                                 'key': key,
@@ -155,4 +168,9 @@ def predict():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=9000)
+
+# %%
+import tensorflow as tf
+tf.__version__
+# %%

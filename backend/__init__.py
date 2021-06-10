@@ -1,3 +1,3 @@
 from pathlib import Path
 
-root_dir = Path('/home/kevin2li/code/react_demo/')
+root_dir = Path('/home/likai/my_repos/react_demo/')

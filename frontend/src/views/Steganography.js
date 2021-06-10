@@ -18,7 +18,7 @@ class Steganography extends React.Component {
     };
     render() {
         var content = null
-        if(this.state.current_menu == '1'){
+        if(this.state.current_menu === '1'){
             content = <IntroSteganography></IntroSteganography>
         }
         return (
