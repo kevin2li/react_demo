@@ -1,7 +1,7 @@
 import React from 'react';
-import { Steps, Typography, Form, Result, Button, Spin, Select, message, Upload, Image, Modal, Table } from 'antd'
+import { Space, Steps, Typography, Form, Result, Button, Spin, Select, message, Upload, Image, Modal, Table } from 'antd'
 import axios from 'axios'
-import { InboxOutlined } from '@ant-design/icons';
+import { InboxOutlined, DownloadOutlined } from '@ant-design/icons';
 import GroupedBar from './GroupedBar';
 const { Step } = Steps;
 const { Title, Paragraph} = Typography;
@@ -15,21 +15,67 @@ const layout = {
     wrapperCol: { span: 8 },
 };
 const validateMessages = {
-    required: '${label} is required!',
-    types: {
-        email: '${label} is not a valid email!',
-        number: '${label} is not a valid number!',
-    },
-    number: {
-        range: '${label} must be between ${min} and ${max}',
-    },
+  required: '${label} is required!',
+  types: {
+      email: '${label} is not a valid email!',
+      number: '${label} is not a valid number!',
+  },
+  number: {
+      range: '${label} must be between ${min} and ${max}',
+  },
 };
 // const onFinish = (values) => {
 //     console.log(values);
 // };
 // Form end
-/* Table columns */
 
+// copy form: https://www.akashmittal.com/react-convert-json-to-csv/
+const JSONToCSVConvertor = (JSONData, ShowLabel) => {
+  //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+  var arrData =
+      typeof JSONData !== "object" ? JSON.parse(JSONData) : JSONData;
+
+  var CSV = "";
+
+  //This condition will generate the Label/Header
+  if (ShowLabel) {
+      var row = "";
+
+      //This loop will extract the label from 1st index of on array
+      for (var index in arrData[0]) {
+      //Now convert each value to string and comma-seprated
+      row += index + ",";
+      }
+
+      row = row.slice(0, -1);
+
+      //append Label row with line break
+      CSV += row + "\r\n";
+  }
+
+  //1st loop is to extract each row
+  for (var i = 0; i < arrData.length; i++) {
+      var row = "";
+
+      //2nd loop will extract each column and convert it in string comma-seprated
+      for (var index in arrData[i]) {
+      row += '"' + arrData[i][index] + '",';
+      }
+
+      row.slice(0, row.length - 1);
+
+      //add a line break after each row
+      CSV += row + "\r\n";
+  }
+
+  if (CSV === "") {
+      alert("Invalid data");
+      return;
+  }
+  return CSV
+}
+
+/* Table columns */
 const columns = [
     {
       title: '图片',
@@ -364,7 +410,7 @@ class ImageSteganalysis extends React.Component {
                             </Button>
                         </Form.Item>
                     </Form>
-                    <Button onClick={this.back} type='default' style={{}}>返回上一步</Button>
+                    <Button onClick={this.back} type='default'>返回上一步</Button>
                     {/* <Button onClick={this.next} type='primary' style={{}}>下一步</Button> */}
                 </>
             )
@@ -396,10 +442,26 @@ class ImageSteganalysis extends React.Component {
             //         label: label, 'cover': i['cover'], 'stego': i['stego']
             //     })
             // }
-            // console.log(data)
-
+            // console.log(this.state.result)
+            // url = window.URL.createObjectURL(
+            //     new Blob([JSON.stringify(this.state.result)], {type:'application/json'}),
+            // );
+            // url = window.URL.createObjectURL(
+            //     new Blob([JSONToCSVConvertor(this.state.result, true)], {type:'data:text/csv;charset=utf-8'}),
+            // );
             const rowSelection = {
-                onChange: this.onSelectChange
+                onChange: this.onSelectChange,
+            }
+            const download = () => {
+              var url = window.URL.createObjectURL(
+                new Blob([JSONToCSVConvertor(this.state.result, true)], {type:'data:text/csv;charset=utf-8'}),
+              );
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = "result.csv";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
             }
             content = <>
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
@@ -407,7 +469,10 @@ class ImageSteganalysis extends React.Component {
                           {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
                           <Table rowSelection={{type: 'checkbox', ...rowSelection,}} dataSource={this.state.result} columns={columns} bordered pagination={{ position: ['bottomCenter']}}/>
                         </div>
-                        <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>重新检测</Button>
+                        <Space>
+                          <Button type="primary" icon={<DownloadOutlined />} onClick={download} size='default'>导出为CSV</Button>
+                          <Button onClick={this.next} type='primary' style={{ margin: "10px 0" }}>重新检测</Button>
+                        </Space>
                     </>
         }
         return (
