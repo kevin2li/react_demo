@@ -93,20 +93,20 @@ def predict():
     models = request.form.get('models').split(',')
     datasets = request.form.get('dataset').split(',')
     embedding_rates = request.form.get('embedding_rate').split(',')
-    framework = request.form.get('framework')
     ic(models)
-    ic(framework)
     ic(datasets)
     ic(embedding_rates)
     try:
         response = {'status': 'ok'}
         response['result'] = []
         key = 1
-        if state['img_path'] and models and framework and datasets and embedding_rates:
+        if state['img_path'] and models and datasets and embedding_rates:
             for img_path in state['img_path']:
                 for dataset in datasets:
                     for embedding_rate in embedding_rates:
                         for model_name in models:
+                            framework = 'pytorch' if model_name in ('ZhuNet', 'YedNet') else 'tensorflow'
+
                             # 实例化模型+加载权重
                             if framework == 'pytorch':
                                 model = eval(model_name)()
