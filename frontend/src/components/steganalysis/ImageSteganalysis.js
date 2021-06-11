@@ -220,6 +220,7 @@ class ImageSteganalysis extends React.Component {
             },
             status: '',
             result: null,
+            init_data: [],
             selected_data: []
         }
         this.formRef = React.createRef();
@@ -235,6 +236,14 @@ class ImageSteganalysis extends React.Component {
         }else if(this.state.step === 1) {
             
         }else if(this.state.step === 2) {
+            var data = []
+            for (let i of this.state.result){
+                var label = [i['image'], i['framework'], i['embedding_rate'], i['dataset'], i['model']].join('-')
+                data.push({
+                    label: label, 'cover': i['cover'], 'stego': i['stego']
+                })
+            }
+            this.setState({init_data: data})
             this.setState({ step: (this.state.step + 1) % 4 })
         }else if(this.state.step === 3) {
             this.setState({ step: (this.state.step + 1) % 4 })
@@ -463,12 +472,13 @@ class ImageSteganalysis extends React.Component {
               link.click();
               document.body.removeChild(link);
             }
+            var data = this.state.selected_data.length === 0 ? this.state.init_data : this.state.selected_data
             content = <>
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
                           <Typography>
                             <Title level={4}>可视化</Title>
                           </Typography>
-                          <GroupedBar data={this.state.selected_data} height={this.state.selected_data.length * 30 > 400 ? this.state.selected_data.length * 30 : 400} width={1200}/>
+                          <GroupedBar data={data} height={data.length * 30 > 400 ? data.length * 30 : 400} width={1200}/>
                           {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
                           <Typography>
                             <Title level={4}>检测结果表</Title>

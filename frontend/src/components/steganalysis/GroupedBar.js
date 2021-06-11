@@ -1,5 +1,6 @@
 import React from "react";
 import {Button} from "antd"
+import { DownloadOutlined } from '@ant-design/icons';
 import {
 	Chart,
 	Interval,
@@ -79,7 +80,7 @@ class GroupedBar extends React.Component {
           />
         </Chart>
         <div style={{ textAlign: 'left', margin: "20px 0" }}>
-          <Button type="primary" onClick={this.saveImg}>保存图表</Button>
+          <Button type="primary" icon={<DownloadOutlined />} onClick={this.saveImg}>保存图表</Button>
         </div>
 		  </>
 		);
