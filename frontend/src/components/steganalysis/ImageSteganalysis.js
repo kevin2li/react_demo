@@ -347,12 +347,12 @@ class ImageSteganalysis extends React.Component {
             content = (
                 <>
                     <Form {...layout} ref={this.formRef} name="nest-messages" initialValues={{ remember: true }} onFinish={this.onFinish} validateMessages={validateMessages} style={{ margin: "30px 0 0 0" }}>
-                        <Form.Item name={['framework']} label="框架" rules={[{ required: true }]} initialValue='pytorch'>
+                        {/* <Form.Item name={['framework']} label="框架" rules={[{ required: true }]} initialValue='pytorch'>
                             <Select placeholder="select framework">
                                 <Option value="pytorch">pytorch</Option>
                                 <Option value="tensorflow">tensorflow</Option>
                             </Select>
-                        </Form.Item>
+                        </Form.Item> */}
                         <Form.Item
                             name="dataset"
                             label="训练数据集"
@@ -376,10 +376,10 @@ class ImageSteganalysis extends React.Component {
                         </Form.Item>
                         <Form.Item name={['embedding_rate']} label="训练嵌入率" rules={[{ required: true }]} initialValue={['0.4']}>
                             <Select mode="multiple" placeholder="select embedding rate">
-                                <Option value="0.2">0.2 bpp</Option>
+                                <Option value="0.2" disabled>0.2 bpp</Option>
                                 <Option value="0.4">0.4 bpp</Option>
-                                <Option value="0.6">0.6 bpp</Option>
-                                <Option value="0.8">0.8 bpp</Option>
+                                <Option value="0.6" disabled>0.6 bpp</Option>
+                                <Option value="0.8" disabled>0.8 bpp</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item
@@ -395,7 +395,7 @@ class ImageSteganalysis extends React.Component {
                                 placeholder="Please select model"
                             >
                                 <Option value="ZhuNet">ZhuNet</Option>
-                                <Option value="SRNet">SRNet</Option>
+                                <Option value="SRNet" disabled>SRNet</Option>
                                 <Option value="YedNet">Yedroudj-Net</Option>
                                 <Option value="YeNet">YeNet</Option>
                                 <Option value="XuNet">XuNet</Option>
@@ -465,9 +465,15 @@ class ImageSteganalysis extends React.Component {
             }
             content = <>
                         <div style={{ textAlign: 'center', margin: '30px 0 0 0' }}>
+                          <Typography>
+                            <Title level={4}>可视化</Title>
+                          </Typography>
                           <GroupedBar data={this.state.selected_data} height={this.state.selected_data.length * 30 > 400 ? this.state.selected_data.length * 30 : 400} width={1200}/>
                           {/* <Image src={"data:image/png;base64, " + this.state.result.image} /> */}
-                          <Table rowSelection={{type: 'checkbox', ...rowSelection,}} dataSource={this.state.result} columns={columns} bordered pagination={{ position: ['bottomCenter']}}/>
+                          <Typography>
+                            <Title level={4}>检测结果表</Title>
+                          </Typography>
+                          <Table rowSelection={{type: 'checkbox', ...rowSelection,}} dataSource={this.state.result} columns={columns} bordered pagination={{ position: ['topLeft']}}/>
                         </div>
                         <Space>
                           <Button type="primary" icon={<DownloadOutlined />} onClick={download} size='default'>导出为CSV</Button>

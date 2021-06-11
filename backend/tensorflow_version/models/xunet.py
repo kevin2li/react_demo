@@ -2,22 +2,15 @@ import os
 import sys
 
 sys.path.append(os.path.abspath('../../..'))
-import glob
-from pathlib import Path
 
-import cv2
 import numpy
 import numpy as np
 import tensorflow as tf
-import tqdm
-from backend import root_dir
 from keras import backend as K
-from keras.utils import np_utils
-from PIL import Image
 from tensorflow.keras.layers import (AveragePooling2D, BatchNormalization,
                                      Concatenate, Conv2D, Dense,
                                      GlobalAveragePooling2D, Lambda, ReLU)
-from tqdm import tqdm
+from backend import root_dir
 
 __all__ = ['XuNet']
 
