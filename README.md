@@ -30,4 +30,12 @@
 `yarn start`
 - shell2  
 `cd react_demo/backend`  
-`python app.py`
+`python app.py`  
+
+## 6. 部署  
+- frontend  
+`cd react_demo/frontend`  
+`yarn build`  
+`serve -s build -l 4000 -C`  
+- backend  
+`gunicorn -w 4 -b 0.0.0.0:9000 app:app`  

@@ -9,11 +9,12 @@ sys.path.append('..')
 import time
 import traceback
 from pathlib import Path
-
+import shutil
 import numpy as np
 import torch.nn.functional as F
 import yaml
 from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 from icecream import ic
 from PIL import Image
 
@@ -30,14 +31,9 @@ with open(cfg_path) as f:
 # %%
 
 app = Flask(__name__)
+cors = CORS(app)
 
-state = {
-    'img_path': deque(),
-    'models': [],
-    'embedding_rate': 0.4,
-    'dataset': 'WOW',
-    'framework': 'pytorch'
-}
+clients = {}
 
 @app.route('/time')
 def get_current_time():
@@ -65,7 +61,9 @@ def blog():
     return jsonify({'current_tab': '5'})
 
 @app.route('/about')
+@cross_origin()
 def about():
+    ic('about')
     return jsonify({'current_tab': '6'})
 
 
@@ -79,29 +77,44 @@ def get_image():
     return jsonify({'type': 'image', 'image_data': encoded_img})
 
 @app.route('/upload_image', methods=['POST'])
+@cross_origin()
 def upload_image():
+    environ = vars(request)['environ']
+    client_addr = f"{environ['REMOTE_ADDR']}"
+    ic(client_addr)
     img = request.files['file']
-    save_path = str(upload_dir / img.filename)
+    save_dir = upload_dir / client_addr
+    save_dir.mkdir(parents=True, exist_ok=True)
+    save_path = str(save_dir / img.filename)
     img.save(save_path)
-    state['img_path'].append(save_path)
-    ic(state['img_path'])
+    if client_addr not in clients:
+        clients[client_addr] = [str(save_path)]
+    else:
+        clients[client_addr].append(str(save_path))
+    ic(clients[client_addr])
     return jsonify({'status': 'ok'})
 
 @app.route('/predict', methods=['POST'])
+@cross_origin()
 def predict():
-    ic(vars(request))
+    # ic(vars(request))
+    environ = vars(request)['environ']
+    client_addr = f"{environ['REMOTE_ADDR']}"
+    img_path_list = clients[client_addr]
+
     models = request.form.get('models').split(',')
     datasets = request.form.get('dataset').split(',')
     embedding_rates = request.form.get('embedding_rate').split(',')
     ic(models)
     ic(datasets)
     ic(embedding_rates)
+    ic(img_path_list)
     try:
         response = {'status': 'ok'}
         response['result'] = []
         key = 1
-        if state['img_path'] and models and datasets and embedding_rates:
-            for img_path in state['img_path']:
+        if img_path_list and models and datasets and embedding_rates:
+            for img_path in img_path_list:
                 for dataset in datasets:
                     for embedding_rate in embedding_rates:
                         for model_name in models:
@@ -157,10 +170,8 @@ def predict():
             # response['result']['image'] = encoded_img
             
             # post process
-            for img_path in state['img_path']:
-                if os.path.exists(img_path):
-                    os.remove(img_path)
-            state['img_path'].clear()
+            shutil.rmtree(str(upload_dir / client_addr))
+            del clients[client_addr]
 
     except:
         traceback.print_exc()
@@ -169,8 +180,3 @@ def predict():
 
 if __name__ == '__main__':
     app.run(debug=True, port=9000)
-
-# %%
-import tensorflow as tf
-tf.__version__
-# %%

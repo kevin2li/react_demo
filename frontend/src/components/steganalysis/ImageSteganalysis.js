@@ -270,11 +270,11 @@ class ImageSteganalysis extends React.Component {
         bodyFormData.append('models', values.models)
         const response = await axios({
             method: "post",
-            url: "/predict",
+            url: "http://lab.cb301.icu:9000/predict",   // for production: http://lab.cb301.icu:9000/predict
             data: bodyFormData,
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { "Content-Type": "multipart/form-data"},
         })
-        console.log(response.data.result)
+        console.log(response.data)
         if(response.data.status === 'ok'){
             this.setState({status: 'ok'})
             this.setState({result: response.data.result})
@@ -329,7 +329,7 @@ class ImageSteganalysis extends React.Component {
             const props = {
                 name: 'file',
                 multiple: true,
-                action: '/upload_image',
+                action: 'http://lab.cb301.icu:9000/upload_image',   // for production: http://lab.cb301.icu:9000/upload_image
                 onDrop(e) {
                   console.log('Dropped files', e.dataTransfer.files);
                 },
@@ -411,7 +411,7 @@ class ImageSteganalysis extends React.Component {
                             </Select>
                         </Form.Item>
                         <Form.Item wrapperCol={{offset: 8, span: 16}}>
-                            <Button type="primary" htmlType="submit" onFinish={this.onFinish}>
+                            <Button type="primary" htmlType="submit">
                                 提交
                             </Button>
                             <Button htmlType="button" onClick={this.onReset}>
@@ -420,7 +420,6 @@ class ImageSteganalysis extends React.Component {
                         </Form.Item>
                     </Form>
                     <Button onClick={this.back} type='default'>返回上一步</Button>
-                    {/* <Button onClick={this.next} type='primary' style={{}}>下一步</Button> */}
                 </>
             )
         } else if (this.state.step === 2) {
@@ -437,27 +436,12 @@ class ImageSteganalysis extends React.Component {
                                 <Button type="primary" key="console" onClick={this.next}>
                                     查看结果
                                 </Button>,
-                                // <Button key="buy">Buy Again</Button>,
                             ]}
                             style={{visibility: this.state.status ? 'visible': 'hidden'}}
                         />
                     </div>
             )
         } else if (this.state.step === 3) {
-            // var data = []
-            // for (let i of this.state.result){
-            //     var label = [i['image'], i['framework'], i['embedding_rate'], i['dataset'], i['model']].join('-')
-            //     data.push({
-            //         label: label, 'cover': i['cover'], 'stego': i['stego']
-            //     })
-            // }
-            // console.log(this.state.result)
-            // url = window.URL.createObjectURL(
-            //     new Blob([JSON.stringify(this.state.result)], {type:'application/json'}),
-            // );
-            // url = window.URL.createObjectURL(
-            //     new Blob([JSONToCSVConvertor(this.state.result, true)], {type:'data:text/csv;charset=utf-8'}),
-            // );
             const rowSelection = {
                 onChange: this.onSelectChange,
             }
