@@ -1,13 +1,13 @@
 import React from 'react';
-import { Space, Steps, Typography, Form, Result, Button, Spin, Select, message, Upload, Image, Modal, Table } from 'antd'
-import axios from 'axios'
+import { Space, Steps, Typography, Form, Result, Button, Spin, Select, message, Upload, Modal, Table } from 'antd'
 import { InboxOutlined, DownloadOutlined } from '@ant-design/icons';
 import GroupedBar from './GroupedBar';
+import Axios from '../Axios'
+
 const { Step } = Steps;
-const { Title, Paragraph} = Typography;
+const { Title} = Typography;
 const { Option, OptGroup } = Select;
 const { Dragger } = Upload;
-
 
 // Form begin
 const layout = {
@@ -264,16 +264,21 @@ class ImageSteganalysis extends React.Component {
         console.log(values)
         this.setState({ step: (this.state.step + 1) % 4 })
         var bodyFormData = new FormData()
+        for(let file of this.state.uploadFlieLst){
+            console.log(file.name)
+            bodyFormData.append('img_list', file.originFileObj)
+        }
         bodyFormData.append('framework', values.framework)
         bodyFormData.append('dataset', values.dataset)
         bodyFormData.append('embedding_rate', values.embedding_rate)
         bodyFormData.append('models', values.models)
-        const response = await axios({
+        const response = await Axios({
             method: "post",
-            url: "http://lab.cb301.icu:9000/predict",   // for production: http://lab.cb301.icu:9000/predict
+            url: "/predict",   // for production: http://lab.cb301.icu:9000/predict
             data: bodyFormData,
             headers: { "Content-Type": "multipart/form-data"},
         })
+        console.log(bodyFormData.getAll('img_list'))
         console.log(response.data)
         if(response.data.status === 'ok'){
             this.setState({status: 'ok'})
@@ -329,7 +334,7 @@ class ImageSteganalysis extends React.Component {
             const props = {
                 name: 'file',
                 multiple: true,
-                action: 'http://lab.cb301.icu:9000/upload_image',   // for production: http://lab.cb301.icu:9000/upload_image
+                action: '',
                 onDrop(e) {
                   console.log('Dropped files', e.dataTransfer.files);
                 },
@@ -338,7 +343,7 @@ class ImageSteganalysis extends React.Component {
                 <>
                     {/* <Demo data={data}/> */}
                     <div style={{margin:"50px auto 20px", minHeight: '25vh', width: '80vw'}}>
-                        <Dragger {...props} onChange={this.onChange} fileList={this.state.uploadFlieLst}>
+                        <Dragger {...props} onChange={this.onChange} beforeUpload={(f, fList) => false} fileList={this.state.uploadFlieLst}>
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
                         </p>
@@ -395,7 +400,7 @@ class ImageSteganalysis extends React.Component {
                             name="models"
                             label="隐写分析模型"
                             rules={[{ required: true, message: 'Please select model!' }]}
-                            initialValue={['ZhuNet']}
+                            initialValue={['XuNet']}
                         >
                             <Select
                                 mode="multiple"

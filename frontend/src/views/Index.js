@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout } from 'antd';
+import BG from '../assets/images/bg.png'
 const {Content } = Layout;
 
 
@@ -11,7 +12,7 @@ const baseStyle1 = {
   textAlign: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundSize: '100% 100%',
-  backgroundImage: 'url(https://th.bing.com/th/id/R914c0cefaea861e735ce139770e648ec?rik=Safa%2fSvB8Mh4Ig&pid=ImgRaw)',
+  backgroundImage: `url(${BG})`,
 }
 class Index extends React.Component {
 

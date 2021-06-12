@@ -1,5 +1,5 @@
 # 安装教程(Linux)
-## 1. 安装node.js(内置npm)
+## 1. 安装node.js
 
 - 安装nvm  
 `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash`  
@@ -38,4 +38,5 @@
 `yarn build`  
 `serve -s build -l 4000 -C`  
 - backend  
-`gunicorn -w 4 -b 0.0.0.0:9000 app:app`  
+`cd react_demo/backend`  
+`gunicorn -w 4 -b 0.0.0.0:9000 -t 300 app:app`  

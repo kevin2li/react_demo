@@ -80,7 +80,7 @@ class GroupedBar extends React.Component {
           />
         </Chart>
         <div style={{ textAlign: 'left', margin: "20px 0" }}>
-          <Button type="primary" icon={<DownloadOutlined />} onClick={this.saveImg}>保存图表</Button>
+          <Button type="primary" icon={<DownloadOutlined />} onClick={this.saveImg}>保存图片</Button>
         </div>
 		  </>
 		);
