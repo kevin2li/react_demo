@@ -19,7 +19,7 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import Axios from "../Axios";
 const { Option } = Select;
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 const { Step } = Steps;
 
 // Form begin
@@ -41,7 +41,7 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 // Form end
 
-class TraditionalStega extends React.Component {
+class ImageStega extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -154,7 +154,7 @@ class TraditionalStega extends React.Component {
             <Radio.Group defaultValue="traditional">
               <Radio.Button value="traditional">传统隐写</Radio.Button>
               <Radio.Button value="adaptive" disabled>自适应隐写</Radio.Button>
-              <Radio.Button value="hiding_image">以图藏图</Radio.Button>
+              <Radio.Button value="hiding_image" disabled>以图藏图</Radio.Button>
             </Radio.Group>
             </Form.Item>
             <Form.Item
@@ -264,11 +264,8 @@ class TraditionalStega extends React.Component {
       );
     } else if (this.state.step === 2) {
       const download = () => {
-        var url = window.URL.createObjectURL(
-          new Blob([this.state.image_data], { type: "image/png" })
-        );
         const link = document.createElement("a");
-        link.href = url;
+        link.href = 'data:application/octet-stream;base64, ' + this.state.image_data;
         link.download = "result.png";
         document.body.appendChild(link);
         link.click();
@@ -280,7 +277,7 @@ class TraditionalStega extends React.Component {
             <div style={{ textAlign: "center" }}>
               <Image src={"data:image/png;base64, " + this.state.image_data} />
             </div>
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center", margin: "30px auto" }}>
               <Space>
                 <Button type="primary" onClick={download}>
                   下载图片
@@ -295,10 +292,15 @@ class TraditionalStega extends React.Component {
       } else {
         content = (
           <>
-            <div>
-              <Text>{this.state.message}</Text>
+            <div style={{ textAlign: "center", height: "80px", lineHeight: "80px", fontSize: "20px", margin: "30px auto" }}>
+              <Typography>
+                <Paragraph>
+                  <Text strong>秘密信息:</Text>
+                  <Text>{this.state.message}</Text>
+                </Paragraph>
+              </Typography>
             </div>
-            <div>
+            <div style={{ textAlign: "center" }}>
               <Button type="primary" onClick={this.next}>
                 重新开始
               </Button>
@@ -338,4 +340,4 @@ class TraditionalStega extends React.Component {
   }
 }
 
-export default TraditionalStega;
+export default ImageStega;

@@ -1,10 +1,8 @@
 import React from 'react';
-import { Layout, Tabs, Menu } from 'antd';
-import {SettingOutlined } from '@ant-design/icons';
+import { Layout, Menu } from 'antd';
 import IntroSteganography from '../components/steganography/IntroSteganography';
-import TraditionalStega from '../components/steganography/TraditionalStega';
+import ImageStega from '../components/steganography/ImageStega';
 const { Content } = Layout;
-const { SubMenu } = Menu;
 
 class Steganography extends React.Component {
     constructor(props) {
@@ -22,9 +20,10 @@ class Steganography extends React.Component {
         if(this.state.current_menu === '1'){
             content = <IntroSteganography></IntroSteganography>
         }else if(this.state.current_menu === '2'){
-            content = <TraditionalStega></TraditionalStega>
+            content = <ImageStega></ImageStega>
         }else if(this.state.current_menu === '3'){
             content = <>文本隐写正在开发中...</>
+            content = <>以图藏图正在开发中...</>
         }
         return (
             <Layout style={{ padding: '0 24px', minHeight: '83vh' }}>

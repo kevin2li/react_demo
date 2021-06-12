@@ -21,7 +21,7 @@ from backend.steganalysis.pytorch_version.models import SRNet, XuNet, YedNet, Ye
 from backend.steganalysis.tensorflow_version.models import XuNet as XuNet_tf, YeNet as YeNet_tf
 from backend.steganalysis.utils import img_preprocess, plot_group_bars
 from backend.steganography import encodeLSB, decodeLSB
-
+from stegano import lsb
 from backend import root_dir
 # %%
 upload_dir = Path('upload')
@@ -192,7 +192,7 @@ def traditional_stega():
     try:
         if type == 'embed':
             for img_path in img_path_list:
-                out_img = encodeLSB(msg, img_path)
+                out_img = lsb.hide(img_path, msg)
                 out_img.save('test.png', format='png')
                 buffer = io.BytesIO()
                 out_img.save(buffer, format='PNG')
@@ -202,7 +202,7 @@ def traditional_stega():
             response['result'] = {'image_data': encoded_img}
         else:
             for img_path in img_path_list:
-                message = decodeLSB(img_path)
+                message = lsb.reveal(img_path)
                 response['result'] = {'message': message}
     except:
         traceback.print_exc()
@@ -211,4 +211,4 @@ def traditional_stega():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=9000)
+    app.run(debug=False, port=9000)
