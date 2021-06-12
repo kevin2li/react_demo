@@ -23,7 +23,6 @@ class Steganography extends React.Component {
             content = <ImageStega></ImageStega>
         }else if(this.state.current_menu === '3'){
             content = <>文本隐写正在开发中...</>
-            content = <>以图藏图正在开发中...</>
         }
         return (
             <Layout style={{ padding: '0 24px', minHeight: '83vh' }}>
