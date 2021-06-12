@@ -38,4 +38,5 @@
 `yarn build`  
 `serve -s build -l 4000 -C`  
 - backend  
+`cd react_demo/backend`
 `gunicorn -w 4 -b 0.0.0.0:9000 app:app`  

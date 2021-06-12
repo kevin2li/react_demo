@@ -17,7 +17,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from icecream import ic
 from PIL import Image
-
+from uuid import uuid4
 from backend.pytorch_version.models import SRNet, XuNet, YedNet, YeNet, ZhuNet
 from backend.tensorflow_version.models import XuNet as XuNet_tf, YeNet as YeNet_tf
 from backend.utils import img_preprocess, plot_group_bars
@@ -32,8 +32,6 @@ with open(cfg_path) as f:
 
 app = Flask(__name__)
 cors = CORS(app)
-
-clients = {}
 
 @app.route('/time')
 def get_current_time():
@@ -76,39 +74,28 @@ def get_image():
     encoded_img = base64.encodebytes(image_binary).decode('ascii')
     return jsonify({'type': 'image', 'image_data': encoded_img})
 
-@app.route('/upload_image', methods=['POST'])
-@cross_origin()
-def upload_image():
-    environ = vars(request)['environ']
-    client_addr = f"{environ['REMOTE_ADDR']}"
-    ic(client_addr)
-    img = request.files['file']
-    save_dir = upload_dir / client_addr
-    save_dir.mkdir(parents=True, exist_ok=True)
-    save_path = str(save_dir / img.filename)
-    img.save(save_path)
-    if client_addr not in clients:
-        clients[client_addr] = [str(save_path)]
-    else:
-        clients[client_addr].append(str(save_path))
-    ic(clients[client_addr])
-    return jsonify({'status': 'ok'})
-
 @app.route('/predict', methods=['POST'])
 @cross_origin()
 def predict():
     # ic(vars(request))
-    environ = vars(request)['environ']
-    client_addr = f"{environ['REMOTE_ADDR']}"
-    img_path_list = clients[client_addr]
-
-    models = request.form.get('models').split(',')
-    datasets = request.form.get('dataset').split(',')
-    embedding_rates = request.form.get('embedding_rate').split(',')
+    img_list = request.files.getlist('img_list')
+    models = request.form['models'].split(',')
+    datasets = request.form['dataset'].split(',')
+    embedding_rates = request.form['embedding_rate'].split(',')
+    ic(img_list)
     ic(models)
     ic(datasets)
     ic(embedding_rates)
+
+    img_path_list = []
+    save_dir = upload_dir / str(uuid4())
+    save_dir.mkdir(parents=True, exist_ok=True)
+    for img in img_list:
+        save_path = str(save_dir / img.filename)
+        img.save(save_path)
+        img_path_list.append(save_path)
     ic(img_path_list)
+
     try:
         response = {'status': 'ok'}
         response['result'] = []
@@ -170,8 +157,7 @@ def predict():
             # response['result']['image'] = encoded_img
             
             # post process
-            shutil.rmtree(str(upload_dir / client_addr))
-            del clients[client_addr]
+            shutil.rmtree(str(save_dir))
 
     except:
         traceback.print_exc()
@@ -179,4 +165,4 @@ def predict():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=9000)
+    app.run(debug=False, port=9000)
