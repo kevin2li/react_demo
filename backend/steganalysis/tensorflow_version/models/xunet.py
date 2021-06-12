@@ -14,7 +14,7 @@ from backend import root_dir
 
 __all__ = ['XuNet']
 
-srm_weights = np.load(str(root_dir / 'backend/res/SRM_Kernels.npy'))
+srm_weights = np.load(str(root_dir / 'backend/steganalysis/res/SRM_Kernels.npy'))
 biasSRM = numpy.ones(30)
 
 T3 = 3

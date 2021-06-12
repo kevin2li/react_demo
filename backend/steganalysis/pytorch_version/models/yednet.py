@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from backend.pytorch_version.utils import ABS, HPF, TLU
+from backend.steganalysis.pytorch_version.utils import ABS, HPF, TLU
 
 __all__ = ['YedNet']
 

@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# %%
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from backend.steganalysis.pytorch_version.utils import ABS
 from torchmetrics import Accuracy
-from backend.pytorch_version.utils import HPF, TLU
 
-__all__ = ['YeNet']
+__all__ = ['XuNet']
 
-class YeNet(pl.LightningModule):
-    def __init__(self, lr: float=0.001, weight_decay: float= 5e-4, gamma: float = 0.2, momentum: float = 0.9, step_size: int = 50, **kwargs):
-        super(YeNet, self).__init__()
+class XuNet(pl.LightningModule):
+    def __init__(self, lr: float=0.001, weight_decay: float= 5e-4, gamma: float = 0.2, momentum: float = 0.9, step_size: int = 200, **kwargs):
+        super(XuNet, self).__init__()
         # 超参
         # for optimizer(SGD)
         self.lr = lr
@@ -22,69 +21,67 @@ class YeNet(pl.LightningModule):
         # for lr scheduler(StepLR)
         self.gamma = gamma
         self.step_size = step_size
+
         # 其他
         self.save_hyperparameters()
         self.accuracy = Accuracy()
 
         # 组网
-        self.layer1 = nn.Sequential(
-            HPF(),
-            TLU(3.0),
+        self.KV = nn.Conv2d(1, 1, 5, padding=2)
+        KV = torch.tensor([[-1, 2, -2, 2, -1],
+                   [2, -6, 8, -6, 2],
+                   [-2, 8, -12, 8, -2],
+                   [2, -6, 8, -6, 2],
+                   [-1, 2, -2, 2, -1]], dtype=torch.float32) / 12.
+        KV = KV.reshape(1, 1, 5, 5)
+        self.KV.weight = nn.Parameter(KV, requires_grad=False)
+
+        self.group1 = nn.Sequential(
+            nn.Conv2d(1, 8, 5, stride=1, padding=2, bias=False),
+            ABS(),
+            nn.BatchNorm2d(8),
+            nn.Tanh(),
+            nn.AvgPool2d(5, 2)
+        )
+        self.group2 = nn.Sequential(
+            nn.Conv2d(8, 16, 5, stride=1, padding=2, bias=False),
+            nn.BatchNorm2d(16),
+            nn.Tanh(),
+            nn.AvgPool2d(5, 2)
+        )
+        self.group3 = nn.Sequential(
+            nn.Conv2d(16, 32, 1, stride=1, padding=0, bias=False),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.AvgPool2d(5, 2)
+        )
+        self.group4 = nn.Sequential(
+            nn.Conv2d(32, 64, 1, stride=1, padding=0, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.AvgPool2d(5, 2)
+        )
+        self.group5 = nn.Sequential(
+            nn.Conv2d(64, 128, 1, stride=1, padding=0, bias=False),
+            nn.BatchNorm2d(128),
+            nn.Tanh(),
+            nn.AdaptiveAvgPool2d((1, 1))
         )
 
-        self.layer2 = nn.Sequential(
-            nn.Conv2d(30, 30, 3, 1),
-            nn.ReLU()
-        )
-        self.layer3 = nn.Sequential(
-            nn.Conv2d(30, 30, 3, 1),
-            nn.ReLU()
-        )
-        self.layer4 = nn.Sequential(
-            nn.Conv2d(30, 30, 3, 1),
-            nn.ReLU(),
-            nn.AvgPool2d(2, 2)
-        )
-        self.layer5 = nn.Sequential(
-            nn.Conv2d(30, 32, 5, 1),
-            nn.ReLU(),
-            nn.AvgPool2d(3, 2)
-        )
-        self.layer6 = nn.Sequential(
-            nn.Conv2d(32, 32, 5, 1),
-            nn.ReLU(),
-            nn.AvgPool2d(3, 2)
-        )
-        self.layer7 = nn.Sequential(
-            nn.Conv2d(32, 32, 5, 1),
-            nn.ReLU(),
-            nn.AvgPool2d(3, 2)
-        )
-        self.layer8 = nn.Sequential(
-            nn.Conv2d(32, 16, 3, 1),
-            nn.ReLU(),
-        )
-        self.layer9 = nn.Sequential(
-            nn.Conv2d(16, 16, 3, 3),
-            nn.ReLU(),
-        )
-        self.layer10 = nn.Sequential(
-            nn.Linear(3*3*16, 2)
+        self.fc = nn.Sequential(
+            nn.Linear(128, 2),
         )
 
     def forward(self, x):
-        out = self.layer1(x)
-        out1 = self.layer2(out)
-        out2 = self.layer3(out1)
-        out3 = self.layer4(out2)
-        out4 = self.layer5(out3)
-        out5 = self.layer6(out4)
-        out6 = self.layer7(out5)
-        out7 = self.layer8(out6)
-        out8 = self.layer9(out7)
-        out8 = out8.reshape(out8.shape[0], -1)
-        out9 = self.layer10(out8)
-        return out9
+        out = self.KV(x)
+        out1 = self.group1(out)
+        out2 = self.group2(out1)
+        out3 = self.group3(out2)
+        out4 = self.group4(out3)
+        out5 = self.group5(out4)
+        out5 = out5.reshape(out5.shape[0], -1)
+        out6 = self.fc(out5)
+        return out6
 
     def configure_optimizers(self):
         params_wd, params_rest = [], []
@@ -93,9 +90,9 @@ class YeNet(pl.LightningModule):
                 (params_wd if m.dim()!=1 else params_rest).append(m)
         param_groups = [{'params': params_wd, 'weight_decay': self.weight_decay},
                         {'params': params_rest}]
-        
-        optimizer = torch.optim.Adadelta(param_groups, lr=self.lr, weight_decay=self.weight_decay)
+        optimizer = torch.optim.SGD(param_groups, lr=self.lr, momentum=self.momentum, weight_decay=self.weight_decay)
         lr_scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=self.step_size, gamma=self.gamma)
+
         return {'optimizer': optimizer, 'lr_scheduler': lr_scheduler}
 
     def training_step(self, batch, batch_idx):

@@ -6,5 +6,5 @@ backend/upload
 backend/*.png
 **/**/*test*
 **/**/*lock*
-backend/pytorch_version/checkpoints/**/*pt
-backend/tensorflow_version/checkpoints/**/*hdf5
+backend/steganalysis/pytorch_version/checkpoints/**/*pt
+backend/steganalysis/tensorflow_version/checkpoints/**/*hdf5

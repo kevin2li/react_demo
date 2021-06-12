@@ -17,14 +17,16 @@ from flask_cors import CORS, cross_origin
 from icecream import ic
 from PIL import Image
 from uuid import uuid4
-from backend.pytorch_version.models import SRNet, XuNet, YedNet, YeNet, ZhuNet
-from backend.tensorflow_version.models import XuNet as XuNet_tf, YeNet as YeNet_tf
-from backend.utils import img_preprocess, plot_group_bars
+from backend.steganalysis.pytorch_version.models import SRNet, XuNet, YedNet, YeNet, ZhuNet
+from backend.steganalysis.tensorflow_version.models import XuNet as XuNet_tf, YeNet as YeNet_tf
+from backend.steganalysis.utils import img_preprocess, plot_group_bars
+from backend.steganography import encodeLSB, decodeLSB
+
 from backend import root_dir
 # %%
 upload_dir = Path('upload')
 upload_dir.mkdir(parents=True, exist_ok=True)
-cfg_path = str(root_dir / 'backend/res/map.yml')
+cfg_path = str(root_dir / 'backend/steganalysis/res/map.yml')
 with open(cfg_path) as f:
     cfg = yaml.safe_load(f)
 # %%
@@ -163,5 +165,50 @@ def predict():
         response['status'] = 'failed'
     return jsonify(response)
 
+@app.route('/traditional_stega', methods=['POST'])
+@cross_origin()
+def traditional_stega():
+    ic(request.form)
+    img_list = request.files.getlist('img_list')
+    model = request.form['model']
+    type = request.form['type']
+    msg = request.form['message']
+    ic(img_list)
+    ic(model)
+    ic(type)
+    ic(msg)
+
+    img_path_list = []
+    save_dir = upload_dir / str(uuid4())
+    save_dir.mkdir(parents=True, exist_ok=True)
+    for img in img_list:
+        save_path = str(save_dir / img.filename)
+        img.save(save_path)
+        img_path_list.append(save_path)
+    ic(img_path_list)
+
+    
+    response = {'status': 'ok'}
+    try:
+        if type == 'embed':
+            for img_path in img_path_list:
+                out_img = encodeLSB(msg, img_path)
+                out_img.save('test.png', format='png')
+                buffer = io.BytesIO()
+                out_img.save(buffer, format='PNG')
+                image_binary = buffer.getvalue()
+                encoded_img = base64.encodebytes(image_binary).decode('ascii')
+                break
+            response['result'] = {'image_data': encoded_img}
+        else:
+            for img_path in img_path_list:
+                message = decodeLSB(img_path)
+                response['result'] = {'message': message}
+    except:
+        traceback.print_exc()
+        response['status'] = 'failed'
+    # ic(response)
+    return jsonify(response)
+
 if __name__ == '__main__':
-    app.run(debug=False, port=9000)
+    app.run(debug=True, port=9000)

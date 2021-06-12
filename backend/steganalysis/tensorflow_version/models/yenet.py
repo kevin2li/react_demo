@@ -6,7 +6,7 @@ from tensorflow.keras.layers import (ReLU)
 
 __all__ = ['YeNet']
 
-srm_weights = np.load(str(root_dir / 'backend/res/SRM_Kernels.npy'))
+srm_weights = np.load(str(root_dir / 'backend/steganalysis/res/SRM_Kernels.npy'))
 biasSRM = np.ones(30)
 T3 = 3
 

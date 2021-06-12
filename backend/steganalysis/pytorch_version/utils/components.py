@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from backend.res.srm_kernels import all_normalized_hpf_list
+from backend.steganalysis.res.srm_kernels import all_normalized_hpf_list
 
 __all__ = ['ABS', 'TLU', 'HPF', 'SPPLayer']
 
