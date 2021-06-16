@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Menu } from 'antd';
 import IntroSteganography from '../components/steganography/IntroSteganography';
 import ImageStega from '../components/steganography/ImageStega';
+import TextStega from '../components/steganography/TextStega';
 const { Content } = Layout;
 
 class Steganography extends React.Component {
@@ -22,7 +23,7 @@ class Steganography extends React.Component {
         }else if(this.state.current_menu === '2'){
             content = <ImageStega></ImageStega>
         }else if(this.state.current_menu === '3'){
-            content = <>文本隐写正在开发中...</>
+            content = <TextStega></TextStega>
         }
         return (
             <Layout style={{ padding: '0 24px', minHeight: '83vh' }}>
