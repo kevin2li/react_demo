@@ -146,16 +146,6 @@ def predict():
                             })
                             key += 1
             ic(response['result'])
-
-            # fig = plot_group_bars(response['result'])
-            # fig.savefig('bar.png')
-
-            # img = Image.open('bar.png')
-            # buffer = io.BytesIO()
-            # img.save(buffer, format='PNG')
-            # image_binary = buffer.getvalue()
-            # encoded_img = base64.encodebytes(image_binary).decode('ascii')
-            # response['result']['image'] = encoded_img
             
             # post process
             shutil.rmtree(str(save_dir))
@@ -192,7 +182,7 @@ def traditional_stega():
     try:
         if type == 'embed':
             for img_path in img_path_list:
-                out_img = lsb.hide(img_path, msg)
+                out_img = lsb.hide(img_path, msg, auto_convert_rgb=True)
                 out_img.save('test.png', format='png')
                 buffer = io.BytesIO()
                 out_img.save(buffer, format='PNG')

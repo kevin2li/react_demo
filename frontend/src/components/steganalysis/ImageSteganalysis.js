@@ -488,7 +488,7 @@ class ImageSteganalysis extends React.Component {
                 <blockquote style={{ textAlign: 'center' }}>说明：请使用256×256灰度图进行测试</blockquote>
                 {/* <Paragraph>图像隐写分析是检测图像中是否含有秘密信息的关键技术，本平台提供了五种隐写分析模型(ZhuNet、SRNet、XuNet、YeNet、Yedroudj-Net)在8种隐写数据集(WOW、S-UNIWARD、UT-GAN等)上的预训练模型，欢迎使用！</Paragraph> */}
             </Typography>
-            <Steps current={this.state.step} >
+            <Steps current={this.state.step} style={{ width: "65vw", margin: "30px auto" }}>
                 <Step title={this.state.step_titles[this.state.step][0]} description="上传可疑图片" />
                 <Step title={this.state.step_titles[this.state.step][1]} subTitle="" description="选择隐写分析模型" />
                 <Step title={this.state.step_titles[this.state.step][2]} description="检测" />

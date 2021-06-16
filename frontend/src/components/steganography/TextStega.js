@@ -40,7 +40,7 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 // Form end
 
-class ImageStega extends React.Component {
+class TextStega extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -94,28 +94,28 @@ class ImageStega extends React.Component {
     bodyFormData.append("type", values.type);
     bodyFormData.append("model", values.model);
     bodyFormData.append("message", values.message);
-    const response = await Axios({
-      method: "post",
-      url: "/traditional_stega",
-      data: bodyFormData,
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    console.log(response.data);
-    if (response.data.status === "ok") {
-      this.setState({ status: "ok" });
-      if (values.type === "embed") {
-        this.setState({ image_data: response.data.result.image_data });
-      } else {
-        this.setState({ message: response.data.result.message });
-      }
-    } else {
-      Modal.error({
-        title: "Error",
-        content: "抱歉，服务器内部错误，请重试！",
-      });
-      this.setState({ step: 0 });
-      this.setState({ uploadFlieLst: [] });
-    }
+    // const response = await Axios({
+    //   method: "post",
+    //   url: "/traditional_stega",
+    //   data: bodyFormData,
+    //   headers: { "Content-Type": "multipart/form-data" },
+    // });
+    // console.log(response.data);
+    // if (response.data.status === "ok") {
+    //   this.setState({ status: "ok" });
+    //   if (values.type === "embed") {
+    //     this.setState({ image_data: response.data.result.image_data });
+    //   } else {
+    //     this.setState({ message: response.data.result.message });
+    //   }
+    // } else {
+    //   Modal.error({
+    //     title: "Error",
+    //     content: "抱歉，服务器内部错误，请重试！",
+    //   });
+    //   this.setState({ step: 0 });
+    //   this.setState({ uploadFlieLst: [] });
+    // }
   };
   next = () => {
     if (this.state.step === 2) {
@@ -148,28 +148,27 @@ class ImageStega extends React.Component {
               name="category"
               label="类别"
               rules={[{ required: true, message: "Please select category!" }]}
-              initialValue={"traditional"}
+              initialValue={"gen"}
             >
-            <Radio.Group defaultValue="traditional">
-              <Radio.Button value="traditional">传统隐写</Radio.Button>
-              <Radio.Button value="adaptive" disabled>自适应隐写</Radio.Button>
-              <Radio.Button value="hiding_image" disabled>以图藏图</Radio.Button>
+            <Radio.Group defaultValue="gen">
+              <Radio.Button value="gen">生成式隐写</Radio.Button>
+              <Radio.Button value="sub" disabled>替换式隐写</Radio.Button>
             </Radio.Group>
             </Form.Item>
             <Form.Item
               name="model"
               label="模型"
               rules={[{ required: true, message: "Please select model!" }]}
-              initialValue={["LSB"]}
+              initialValue={["A"]}
             >
               <Select
                 allowClear
                 style={{ width: "100%" }}
                 placeholder="Please select model"
               >
-                <Option value="LSB">LSB</Option>
-                <Option value="LSBM" disabled>
-                  LSBM
+                <Option value="A">A</Option>
+                <Option value="B" disabled>
+                  B
                 </Option>
               </Select>
             </Form.Item>
@@ -188,41 +187,19 @@ class ImageStega extends React.Component {
             </Form.Item>
             <Form.Item
               name="message"
-              label="秘密信息"
-              rules={[
-                {
-                  required: this.state.type === "embed" ? true : false,
-                  message: "Please input secret message!",
-                },
-              ]}
-              style={
-                this.state.type === "extract"
-                  ? { visibility: "hidden", display: "none" }
-                  : {}
-              }
-            >
-              <Input.TextArea placeholder="e.g. 0101101010101" rows={4} />
-            </Form.Item>
-            <Form.Item
-              name="img_list"
-              label="图片"
+              label= {this.state.type === "embed" ? "秘密信息": "密文信息"}
               rules={[
                 {
                   required: true,
-                  message: "Please upload image!",
+                  message: "Please input secret message!",
                 },
               ]}
             >
-              <Upload
-                onChange={this.onFileChange}
-                beforeUpload={(f, fList) => false}
-                fileList={this.state.uploadFlieLst}
-              >
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-              </Upload>
+              <Input.TextArea placeholder="e.g. 0101101010101" rows={4} />
             </Form.Item>
+
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" disabled>
                 提交
               </Button>
               <Button htmlType="button" onClick={this.onReset}>
@@ -312,8 +289,8 @@ class ImageStega extends React.Component {
       <>
         <div style={{ textAlign: "center", margin: "30px 0 0 0" }}>
           <Typography>
-            <Title>图像隐写示例</Title>
-            <blockquote>说明：目前仅支持LSB嵌入</blockquote>
+            <Title>文本隐写示例</Title>
+            <blockquote>说明：正在开发中...</blockquote>
           </Typography>
         </div>
         <Steps
@@ -339,4 +316,4 @@ class ImageStega extends React.Component {
   }
 }
 
-export default ImageStega;
+export default TextStega;
