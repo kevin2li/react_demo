@@ -96,7 +96,7 @@ def predict():
         img.save(save_path)
         img_path_list.append(save_path)
     ic(img_path_list)
-
+    
     try:
         response = {'status': 'ok'}
         response['result'] = []

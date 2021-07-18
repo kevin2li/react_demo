@@ -23,7 +23,6 @@ class Index extends React.Component {
           className="site-layout-background"
         >
           <div style={baseStyle1}>
-            
           </div>
         </Content>
       </Layout>

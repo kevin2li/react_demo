@@ -355,7 +355,7 @@ class ImageSteganalysis extends React.Component {
                         </p>
                         </Dragger>
                     </div>
-                    <Button onClick={this.next} type='primary' style={{ margin: "20px 0 0" }}>下一步</Button>
+                    <Button onClick={this.next} type='primary' style={{ margin: "20px 6vw 0" }}>下一步</Button>
                 </>
             )
         } else if (this.state.step === 1) {
@@ -425,7 +425,7 @@ class ImageSteganalysis extends React.Component {
                             </Button>
                         </Form.Item>
                     </Form>
-                    <Button onClick={this.back} type='default'>返回上一步</Button>
+                    <Button onClick={this.back} type='default' style={{marginLeft:"13vw"}}>返回上一步</Button>
                 </>
             )
         } else if (this.state.step === 2) {
